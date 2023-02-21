@@ -5,3 +5,7 @@ build/**
 .vscode
 .vscode/*
 .vscode/**
+
+.sandbox
+.sandbox/*
+.sandbox/**

@@ -53,27 +53,24 @@ struct CircleSquareFirstKid :
 
 #else
 
-struct Shape : RTTI<Shape, Object>
+struct Shape : virtual Object, RTTI<Shape>
 {
-    RTTI_CLASS_NAME(Shape);
+    DEFINE_RTTI(Shape, Object);
 };
 
-struct Square :
-    RTTI<Square, Shape>
+struct Square : Shape, RTTI<Square>
 {
-    RTTI_CLASS_NAME(Square);
+    DEFINE_RTTI(Square, Shape);
 };
 
-struct Circle :
-    RTTI<Circle, Shape>
+struct Circle : Shape, RTTI<Circle>
 {
-    RTTI_CLASS_NAME(Circle);    
+    DEFINE_RTTI(Circle, Shape);
 };
 
-struct CircleSquare :
-    RTTI<CircleSquare, Circle, Square>
+struct CircleSquare : Circle, Square, RTTI<CircleSquare>
 {
-    RTTI_CLASS_NAME(CircleSquare);
+    DEFINE_RTTI(CircleSquare, Circle, Square);
 
     CircleSquare(int numCircles, int numSquares)
     : numCircles(numCircles), numSquares(numSquares) {}
@@ -82,11 +79,9 @@ struct CircleSquare :
     int numSquares;
 };
 
-struct CircleSquareFirstKid :
-    RTTI<CircleSquareFirstKid, CircleSquare>
+struct CircleSquareFirstKid : CircleSquare, RTTI<CircleSquareFirstKid>
 {
-    RTTI_CLASS_NAME(CircleSquare);
-    
+    DEFINE_RTTI(CircleSquareFirstKid, CircleSquare);
     CircleSquareFirstKid() : CircleSquare(1,1) {}
 };
 
@@ -99,16 +94,22 @@ int main() {
     vector<shared_ptr<Object>> objs = {
         make_shared<Object>(),
         make_shared<Shape>(),
-        make_shared<Circle>(),
         make_shared<Square>(),
+        make_shared<Circle>(),
         make_shared<CircleSquareFirstKid>()
     };
 
     for (auto &o : objs) {
         cout << "o->rtti->name = " << o->rtti->name << "\n";
+
+        if (o->rtti == &CircleSquareFirstKid::info()) {
+            auto *cc = o->cast<CircleSquareFirstKid>();
+            cout << "Discovered " << cc->rtti->name << ": "
+                 << cc->numCircles << ", " << cc->numSquares << "\n";
+        }
     }
 
-    cout << "Circle::info().name = " << Circle::info().name << "\n";
+    cout << "CircleSquareFirstKid::info().name = " << CircleSquareFirstKid::info().name << "\n";
     cout << "Object::info().name = " << Object::info().name << "\n";
 
     return 0;

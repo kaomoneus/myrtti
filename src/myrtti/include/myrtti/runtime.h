@@ -7,18 +7,26 @@
 #include <array>
 #include <iostream>
 #include <utility>
+#include <unordered_map>
 
 namespace myrtti {
 
 struct ClassInfo {
     const char* name;
 
+    // this is a custom make_array implementation
+    template<class ...Parents>
+    static std::array<const ClassInfo*, sizeof...(Parents)>
+    mk_class_info_array() {
+        return {&Parents::info()...};
+    }
+
     ClassInfo(const char* name) : name(name) {}
 
-    template<std::size_t N>
-    ClassInfo(const char* name, const std::array<const ClassInfo*, N>& parents) : name(name) {
+    template<typename ArrayT>
+    ClassInfo(const char* name, const ArrayT& parents) : name(name) {
         std::cout << "Registered class: " << name << "\n";
-        for (const auto& p : parents) {
+        for (const ClassInfo* p : parents) {
             std::cout << "    parent: " << p->name << "\n";
         }
     }
@@ -29,40 +37,67 @@ private:
     class_id_t id = NextId();
 };
 
-#define RTTI_CLASS_NAME(cn) \
-    static const char* className() { return #cn; }
+struct RTTIMeta {
+    static const ClassInfo& info() {
+        static ClassInfo v("Object");
+        return v;
+    }
 
-
-struct Object {
-    RTTI_CLASS_NAME(Object);
-    static const ClassInfo& info() { static ClassInfo v(className()); return v; }
-
-    // We intentinally keep it public:
+    // We intentinally keep rtti field public:
     const ClassInfo* rtti = &info();
+
+    template<class T>
+    T* cast() {
+        auto found = this->crossPtrs.find(&T::info());
+        if (found != end(this->crossPtrs))
+            return static_cast<T*>(found->second);
+        return nullptr;
+    }
+
+    template<class T>
+    const T* cast() const {
+        auto found = this->crossPtrs.find(&T::info());
+        if (found != end(this->crossPtrs))
+            return static_cast<T*>(found->second);
+        return nullptr;
+    }
+protected:
+    template<class T>
+    friend class RTTI;
+
+    // TODO: randomize hashing routine.
+    std::unordered_map<const ClassInfo*, void*> crossPtrs;
 };
+
+struct Object : virtual RTTIMeta {};
 
 // Problems:
 // 1. If we inharit RTTI from Parents, then we can't
 // use parents with non-default constructors.
+// 1.1. Here we also could create:
+//    template<class ParentSrcs..>
+//    RTTI(ParentSrcs... srcs) : ParentSrcs(srcs)... {}
+//    But what happens if some of parents have shared ancestor?
+//    So we bump into unspecified behaviour.
 // 2. If we let T to inharit parents by itself, then we get T::info ambiguity.
 // 3. If we move 'info' into T, that we're out of "parents" clause,
 //    so then for RTTI definition we should not only to provide a tricky parent,
 //    but also write something in declaration body.
 
-template <class T, class ...Parents>
-struct RTTI : virtual Parents... {
-    RTTI() { this->rtti = &info(); }
-
-    static const ClassInfo& info() {
-        static ClassInfo v(            
-            T::className(),
-            std::array<const ClassInfo*, sizeof...(Parents)>({
-                &Parents::info()...
-            })
-        );
-        return v;
+template <class T>
+struct RTTI : virtual RTTIMeta {
+    RTTI() {
+        auto *superSelf = static_cast<T*>(this);
+        this->rtti = &T::info();
+        this->crossPtrs[this->rtti] = superSelf;
     }
 };
+
+#define DEFINE_RTTI(cn, ...) \
+    static const ClassInfo& info() { \
+        static ClassInfo v(#cn, ClassInfo::mk_class_info_array<__VA_ARGS__>()); \
+        return v; \
+    } \
 
 } // namespace myrtti
 
