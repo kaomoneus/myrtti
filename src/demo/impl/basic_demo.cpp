@@ -8,51 +8,6 @@
 using namespace std;
 using namespace myrtti;
 
-#if 0
-
-struct Shape : RTTIRoot<Shape>
-{
-    RTTI_CLASS_NAME(Shape);
-};
-
-struct Square :
-    Shape,
-    RTTI<Square, Shape>
-{
-    RTTI_CLASS_NAME(Square);
-};
-
-struct Circle :
-    Shape,
-    RTTI<Circle, Shape>
-{
-    RTTI_CLASS_NAME(Circle);    
-};
-
-struct CircleSquare :
-    Circle, Square,
-    RTTI<CircleSquare, Circle, Square>
-{
-    RTTI_CLASS_NAME(CircleSquare);
-
-    CircleSquare(int numCircles, int numSquares)
-    : numCircles(numCircles), numSquares(numSquares) {}
-
-    int numCircles;
-    int numSquares;
-};
-
-struct CircleSquareFirstKid :
-    CircleSquare,
-    RTTI<CircleSquareFirstKid, CircleSquare>
-{
-    RTTI_CLASS_NAME(CircleSquare);
-    
-    CircleSquareFirstKid() : CircleSquare(1,1) {}
-};
-
-#else
-
 struct Shape : virtual Object, RTTI<Shape>
 {
     DEFINE_RTTI(Shape, Object);
@@ -60,7 +15,7 @@ struct Shape : virtual Object, RTTI<Shape>
 
 struct Square : Shape, RTTI<Square>
 {
-    DEFINE_RTTI(Square, Shape);
+    DEFINE_RTTI(Square, Shape /* more parents might be present*/);
 };
 
 struct Circle : Shape, RTTI<Circle>
@@ -85,7 +40,6 @@ struct CircleSquareFirstKid : CircleSquare, RTTI<CircleSquareFirstKid>
     CircleSquareFirstKid() : CircleSquare(1,1) {}
 };
 
-#endif
 
 int main() {
 

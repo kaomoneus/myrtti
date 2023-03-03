@@ -2,7 +2,7 @@
 #define MYRTTI_RUNTIME_H
 
 #include "myrtti/class_id.h"
-#include "myrtti/dag.h"
+#include "myrtti/hierarchy.h"
 
 #include <array>
 #include <iostream>
@@ -24,11 +24,12 @@ struct ClassInfo {
     ClassInfo(const char* name) : name(name) {}
 
     template<typename ArrayT>
-    ClassInfo(const char* name, const ArrayT& parents) : name(name) {
+    ClassInfo(const char* name, ArrayT&& parents) : name(name) {
         std::cout << "Registered class: " << name << "\n";
         for (const ClassInfo* p : parents) {
             std::cout << "    parent: " << p->name << "\n";
         }
+        Hierarchy::instance()->add(this, std::move(parents));
     }
 
     unsigned getId() { return id; }
@@ -49,7 +50,7 @@ struct RTTIMeta {
     template<class T>
     T* cast() {
         auto found = this->crossPtrs.find(&T::info());
-        if (found != end(this->crossPtrs))
+        if (/*[[likely]]*/ found != end(this->crossPtrs))
             return static_cast<T*>(found->second);
         return nullptr;
     }

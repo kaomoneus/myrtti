@@ -1,12 +1,11 @@
-set(TARGET demo)
+set(BASIC basic_demo)
 
 add_executable(
-    ${TARGET}
-    impl/main.cpp
+    ${BASIC}
+    impl/basic_demo.cpp
 )
 
 target_link_libraries(
-    ${TARGET}
-
+    ${BASIC}
     libmyrtti
 )
