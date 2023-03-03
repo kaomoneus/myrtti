@@ -21,15 +21,17 @@ struct ClassInfo {
         return {&Parents::info()...};
     }
 
-    ClassInfo(const char* name) : name(name) {}
+    ClassInfo(const char* name) : name(name) {
+        Hierarchy::instance()->add(this, std::array<const ClassInfo*, 0>());
+    }
 
     template<typename ArrayT>
-    ClassInfo(const char* name, ArrayT&& parents) : name(name) {
+    ClassInfo(const char* name, const ArrayT& parents) : name(name) {
         std::cout << "Registered class: " << name << "\n";
         for (const ClassInfo* p : parents) {
             std::cout << "    parent: " << p->name << "\n";
         }
-        Hierarchy::instance()->add(this, std::move(parents));
+        Hierarchy::instance()->add(this, parents);
     }
 
     unsigned getId() { return id; }
@@ -51,6 +53,7 @@ struct RTTIMeta {
     T* cast() {
         auto found = this->crossPtrs.find(&T::info());
         if (/*[[likely]]*/ found != end(this->crossPtrs))
+            // FIXME: cross-cast won't work! Need to use hierarchy.
             return static_cast<T*>(found->second);
         return nullptr;
     }

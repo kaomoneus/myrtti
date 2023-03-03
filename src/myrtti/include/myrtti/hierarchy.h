@@ -15,12 +15,25 @@ struct ClassInfo;
 template <typename NodeT> struct DAG;
 
 struct Hierarchy {
+
     /// @brief Adds class to hierarchy
     /// @param cls class to be added
     /// @param parents parents list
     template<typename ArrayT>
-    void add(const ClassInfo *cls, ArrayT&& parents) {
-        dag.add(cls, std::move(parents));
+    void add(const ClassInfo *cls, const ArrayT& parents) {
+        dag.add(cls, parents);
+
+        if (!parents.empty()) {
+            auto it_emplaced = ancestorsCache.emplace(cls, classes_set_t());
+
+            // Get ancestors cache for O(0) 'isParent' implementation.
+            // tradeof: RAM consumption N^2 (N amount of classes)
+            dag.bfs(cls, [&] (const ClassInfo* ancestor) {
+                auto &it = it_emplaced.first;
+                it->second.insert(ancestor);
+                return true;
+            });
+        }
     }
 
     /// @brief Checks child-parent relation
@@ -28,7 +41,8 @@ struct Hierarchy {
     /// @param parent parent class
     /// @return true if relation is confirmed
     bool isParent(const ClassInfo *child, const ClassInfo *parent) {
-        return dag.hasCommonPath(child, parent);
+        return ancestorsCache.count(child)
+            && ancestorsCache[child].count(parent);
     }
 
     /// @brief Callback type for use with hierarchy walking methods.
@@ -73,6 +87,10 @@ private:
     // As an alternative we can use shared_ptr, but it might be slower.
     // std::shared_ptr<DAG<const ClassInfo*>> dag;
     DAG<const ClassInfo*> dag;
+
+    using classes_set_t = std::unordered_set<const ClassInfo*>;
+
+    std::unordered_map<const ClassInfo*, classes_set_t> ancestorsCache;
 };
 
 } // namespace myrtti
