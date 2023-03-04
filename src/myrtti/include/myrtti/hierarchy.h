@@ -23,20 +23,26 @@ struct Hierarchy {
     void add(const ClassInfo *cls, const ArrayT& parents) {
         dag.add(cls, parents);
 
-        if (!parents.empty()) {
-            auto it_emplaced = ancestorsCache.emplace(cls, classes_set_t());
 
-            // Get ancestors cache for O(0) 'isParent' implementation.
-            // tradeof: RAM consumption N^2 (N amount of classes)
-            dag.bfs(cls, [&] (const ClassInfo* ancestor) {
-                auto &it = it_emplaced.first;
-                it->second.insert(ancestor);
-                return true;
-            });
+        // Get ancestors cache for O(0) 'isParent' implementation.
+        // tradeof: RAM consumption N^2 (N amount of classes)
+        if (!parents.empty()) {
+            auto [it, _] = ancestorsCache.emplace(cls, classes_set_t());
+            auto &ancestors = it->second;
+
+            for (auto p : parents) {
+                auto &pAncestors = ancestorsCache[p];
+                ancestors.insert(begin(pAncestors), end(pAncestors));
+            }
+            ancestors.insert(begin(parents), end(parents));
         }
     }
 
-    /// @brief Checks child-parent relation
+    /// @brief Checks child-parent relation.
+    /// NOTE: this is a duplicated feature of RTTIMeta::cast<T>
+    ///   the latter applicable for <instance, another class> pair,
+    ///   whilst the former applicable for pure <ClassInfo, ClassInfo> pair.
+    ///
     /// @param child child class
     /// @param parent parent class
     /// @return true if relation is confirmed

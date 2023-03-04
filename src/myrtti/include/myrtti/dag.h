@@ -1,11 +1,14 @@
 #ifndef MYRTTI_DAG_H
 #define MYRTTI_DAG_H
 
+#include <algorithm>
 #include <cassert>
 #include <functional>
 #include <unordered_map>
 #include <unordered_set>
 #include <stdexcept>
+#include <type_traits>
+#include <utility>
 #include <vector>
 
 namespace myrtti {
@@ -33,11 +36,36 @@ struct DAG {
 
     /// @brief Deep first search from node to its predecessors.
     /// @param startNode node the search starts from
-    /// @param onNode is called for each visited node.
+    /// @param onBeforeNode is called for each node before recursive deepings.
+    /// @param onAfterNode is called for each node after all subsequent
+    ///        nodes have been visited.
+    ///        If during subsequent nodes the search is canceled this
+    ///        callback IS NOT INVOKED.
+    /// @param reversiveSideWalk true then we walk direct parents from last
+    ///        to first.
     /// @return true if search completed successfully and 'false' if it
     ///         was interrupted by callback.
-    bool dfs(NodeIdT startNode, const node_callback_t& onNode) {
-        throw std::logic_error("Not implemented.");
+    bool dfs(
+        NodeIdT startNode,
+        const node_callback_t& onBeforeNode,
+        const node_callback_t& onAfterNode = nullptr,
+        bool reversiveSideWalk = false
+    ) const {
+        nodes_set_t visited;
+
+        if (/* [[likely]] */ !reversiveSideWalk)
+            return dfsRecursive(
+                visited, startNode,
+                &nodes_list_t::cbegin, &nodes_list_t::cend,
+                onBeforeNode, onAfterNode
+            );
+        else {
+            return dfsRecursive(
+                visited, startNode,
+                &nodes_list_t::crbegin, &nodes_list_t::crend,
+                onBeforeNode, onAfterNode
+            );
+        }
     }
 
     /// @brief Breadth first search from node to its predecessors.
@@ -75,6 +103,43 @@ private:
 
     using nodes_list_t = std::vector<NodeIdT>;
     using nodes_set_t = std::unordered_set<NodeIdT>;
+
+    template <typename ItPtrs>
+    bool dfsRecursive(
+        nodes_set_t &visited,
+        NodeIdT curNode,
+        ItPtrs beginPtr,
+        ItPtrs endPtr,
+        const node_callback_t& onBeforeNode,
+        const node_callback_t& onAfterNode = nullptr
+    ) const {
+        auto [_, inserted] = visited.insert(curNode);
+        if (!inserted)
+            return true;
+
+        if (onBeforeNode && !onBeforeNode(curNode))
+            return false;
+
+        auto incomingIt = incomingEdges.find(curNode);
+        if (incomingIt != end(incomingEdges)) {
+
+            const auto& incoming = incomingIt->second;
+
+            auto beginF = std::bind(beginPtr, &incoming);
+            auto endF = std::bind(endPtr, &incoming);
+
+            for (auto i = beginF(), e = endF(); i!=e; ++i) {
+                NodeIdT p = *i;
+                if (!dfsRecursive(visited, p, beginPtr, endPtr, onBeforeNode, onAfterNode))
+                    return false;
+            }
+        }
+
+        if (onAfterNode && !onAfterNode(curNode))
+            return false;
+
+        return true;
+    };
 
     nodes_set_t nodes;
     nodes_set_t roots;
