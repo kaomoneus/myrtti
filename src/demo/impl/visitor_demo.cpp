@@ -1,64 +1,90 @@
 #include <iostream>
+#include <optional>
 #include <string>
 
 #include "myrtti.h"
+#include "myrtti/visitor.h"
 
 using namespace std;
-using namespace rtti;
+using namespace myrtti;
 
 struct Exception : virtual Object, RTTI<Exception>
 {
-    DEFINE_RTTI(Shape, Object);
+    DEFINE_RTTI(Exception, Object);
+    Exception(const std::string_view &m) : message(m) {}
     string message;
 };
 
 struct ExceptionErrorOne : Exception, RTTI<ExceptionErrorOne>
 {
     DEFINE_RTTI(ExceptionErrorOne, Exception);
-    ExceptionErrorOne() : Exception{"Exception One Error"} {}
+    ExceptionErrorOne() : Exception("Exception One Error") {}
 };
 
-struct ExceptionErrorTwo : Exception, RTTI<ExceptionErrorOne>
+struct ExceptionErrorTwo : Exception, RTTI<ExceptionErrorTwo>
 {
     DEFINE_RTTI(ExceptionErrorTwo, Exception);
-    ExceptionErrorTwo() : Exception{"Exception Two Error"} {}
+    ExceptionErrorTwo() : Exception("Exception Two Error") {}
 
 };
 
-struct ExceptionErrorThree : Exception, RTTI<ExceptionErrorOne>
+struct ExceptionErrorThree : Exception, RTTI<ExceptionErrorThree>
 {
     DEFINE_RTTI(ExceptionErrorThree, Exception);
-    ExceptionErrorTwo() : Exception{"Exception Three Error"} {}
+    ExceptionErrorThree() : Exception("Exception Three Error") {}
 };
 
 int main() {
-    Visitor<Object> visitor(
+
+    std::cout << "Checking classic visitor...\n";
+
+    VisitorConst visitor(
         [](const Exception& e) {
-            cout << "Exception, msg: " << e.message << "\n";
+            cout << "TEST EXCEPTION: Exception, msg: " << e.message << "\n";
+            return true;
         },
         [](const ExceptionErrorOne& e) {
-            cout << "ExceptionOne direct catch.\n";
+            cout << "TEST EXCEPTION: ExceptionOne.\n";
+            return true;
         },
         [](const ExceptionErrorTwo& e) {
-            cout << "ExceptionTwo direct catch.\n";
+            cout << "TEST EXCEPTION: ExceptionTwo.\n";
+            return true;
         }
     );
 
-    ExceptionErrorOne one;
-    ExceptionErrorTwo two;
-    ExceptionErrorThree three;
+    cout << "Running classic visitor:\n";
 
-    cout << "Direct visitor:\n";
+    visitor.visit(ExceptionErrorOne());
+    visitor.visit(ExceptionErrorTwo());
+    visitor.visit(ExceptionErrorThree());
 
-    visitor.visit(one);
-    visitor.visit(two);
-    visitor.visit(three);
+    cout << "Checking and running info visitor:\n";
 
-    cout << "Class info visitor:\n";
+    VisitorStatic staticVisitor({
+        {
+            &Exception::info(), [] {
+                std::cout << "STATIC: Exception\n";
+                return true;
+            }
+        },
+        {
+            &ExceptionErrorOne::info(), [] {
+                std::cout << "STATIC: ExceptionOne\n";
+                return true;
+            }
+        },
+        {
+            &ExceptionErrorTwo::info(), [] {
+                std::cout << "STATIC: ExceptionTwo\n";
+                return true;
+            }
+        }
+    });
 
-    visitor.visit(ExceptionErrorOne::info());
-    visitor.visit(ExceptionErrorTwo::info());
-    visitor.visit(ExceptionErrorThree::info());
+    staticVisitor.visit(&ExceptionErrorOne::info());
+    staticVisitor.visit(&ExceptionErrorTwo::info());
+    staticVisitor.visit(&ExceptionErrorThree::info());
 
     return 0;
 }

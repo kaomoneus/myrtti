@@ -54,26 +54,24 @@ struct Hierarchy {
     /// @brief Callback type for use with hierarchy walking methods.
     using node_callback_t = std::function<bool(const ClassInfo *)>;
 
-    /// @brief Deep first search from class to its ancestors.
-    /// Might be usefull for constructor-like calls, for constructors
-    /// should be called from ancestors to current class.
+    /// @brief Invokes custom callback follwing classes as it would call
+    /// constructors.
     /// @param cls cls the search starts from
-    /// @param onNode is called for each node.
+    /// @param onNode node callback.
     /// @return true if search completed successfully and 'false' if it
     ///         was interrupted by callback.
     bool contruct(const ClassInfo *cls, const node_callback_t& onNode) {
-        return dag.dfs(cls, onNode);
+        return dag.dfs(cls, /*onBeforeNode*/ nullptr, /*onAfterNode*/onNode);
     }
 
-    /// @brief Breadth first search from class to its ancestors.
-    /// Might be usefull for destructor-like calls, since destructors
-    /// are calling from current class, down to ancestors.
+    /// @brief Invokes custom callback follwing classes as it would call
+    /// destructors.
     /// @param cls cls the search starts from
-    /// @param onNode is called for each node.
+    /// @param onNode node callback.
     /// @return true if search completed successfully and 'false' if it
     ///         was interrupted by callback.
     bool destruct(const ClassInfo* cls, const node_callback_t& onNode) {
-        return dag.bfs(cls, onNode);
+        return dag.dfs(cls, /*onBeforeNode*/ onNode);
     }
 
     Hierarchy& operator=(const Hierarchy& src) = delete;
@@ -87,7 +85,8 @@ private:
     // TODO: in order to reduce compile time impact we could
     // move out direct DAG template usage into .cpp file.
     // We can do it through HierarchyImpl which will be defined
-    // in .cpp and will store DAG instead of Hierarchy itself.
+    // in .cpp. It allows to declare DAG template in .cpp, thus reducing
+    // complexity of task for those who will use header.
     // With high probability this impl will be inlined by compiler
     // optimizations.
     // As an alternative we can use shared_ptr, but it might be slower.

@@ -1,4 +1,5 @@
 set(BASIC basic_demo)
+set(VISITOR visitor_demo)
 
 add_executable(
     ${BASIC}
@@ -7,5 +8,15 @@ add_executable(
 
 target_link_libraries(
     ${BASIC}
+    libmyrtti
+)
+
+add_executable(
+    ${VISITOR}
+    impl/visitor_demo.cpp
+)
+
+target_link_libraries(
+    ${VISITOR}
     libmyrtti
 )

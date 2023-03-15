@@ -27,9 +27,9 @@ struct ClassInfo {
 
     template<typename ArrayT>
     ClassInfo(const char* name, const ArrayT& parents) : name(name) {
-        std::cout << "Registered class: " << name << "\n";
+        // std::cout << "Registered class: " << name << "\n";
         for (const ClassInfo* p : parents) {
-            std::cout << "    parent: " << p->name << "\n";
+            // std::cout << "    parent: " << p->name << "\n";
         }
         Hierarchy::instance()->add(this, parents);
     }
@@ -60,7 +60,8 @@ struct RTTIMeta {
 
     template<class T>
     const T* cast() const {
-        auto found = this->crossPtrs.find(&T::info());
+        auto &tInfo = T::info();
+        auto found = this->crossPtrs.find(&tInfo);
         if (found != end(this->crossPtrs))
             return static_cast<T*>(found->second);
         return nullptr;
