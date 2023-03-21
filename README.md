@@ -1,4 +1,4 @@
-#MyRTTI
+# MyRTTI
 *A C++ RTTI solution with full access to classes hierarchy and minimum
 addional coding for classes definition.*
 
