@@ -18,7 +18,7 @@ struct ClassInfo {
     template<class ...Parents>
     static std::array<const ClassInfo*, sizeof...(Parents)>
     mk_class_info_array() {
-        return {&Parents::info()...};
+        return {Parents::info()...};
     }
 
     ClassInfo(const char* name) : name(name) {
@@ -42,17 +42,17 @@ private:
 
 struct Object {
     // FIXME: must return ClassInfo* (not reference)
-    static const ClassInfo& info() {
+    static const ClassInfo* info() {
         static ClassInfo v("Object");
-        return v;
+        return &v;
     }
 
     // We intentinally keep rtti field public:
-    const ClassInfo* rtti = &info();
+    const ClassInfo* rtti = info();
 
     template<class T>
     T* cast() {
-        auto found = this->crossPtrs.find(&T::info());
+        auto found = this->crossPtrs.find(T::info());
         if (/*[[likely]]*/ found != end(this->crossPtrs))
             // FIXME: cross-cast won't work! Need to use hierarchy.
             return static_cast<T*>(found->second);
@@ -61,8 +61,8 @@ struct Object {
 
     template<class T>
     const T* cast() const {
-        auto &tInfo = T::info();
-        auto found = this->crossPtrs.find(&tInfo);
+        auto *tInfo = T::info();
+        auto found = this->crossPtrs.find(tInfo);
         if (found != end(this->crossPtrs))
             return static_cast<T*>(found->second);
         return nullptr;
@@ -92,15 +92,15 @@ template <class T>
 struct RTTI : virtual Object {
     RTTI() {
         auto *superSelf = static_cast<T*>(this);
-        this->rtti = &T::info();
+        this->rtti = T::info();
         this->crossPtrs[this->rtti] = superSelf;
     }
 };
 
 #define DEFINE_RTTI(cn, ...) \
-    static const ClassInfo& info() { \
+    static const ClassInfo* info() { \
         static ClassInfo v(#cn, ClassInfo::mk_class_info_array<__VA_ARGS__>()); \
-        return v; \
+        return &v; \
     } \
 
 } // namespace myrtti

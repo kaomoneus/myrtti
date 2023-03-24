@@ -41,9 +41,9 @@ namespace myrtti
                 [&] {
                     std::cout << std::hex
                     << "VISITOR: Registered handler for "
-                    << &Cls::info() << " " << Cls::info().name << "\n";
+                    << Cls::info() << " " << Cls::info()->name << "\n";
                     visitorsMap.emplace(
-                        &Cls::info(),
+                        Cls::info(),
                         [=] (const Object& b) {
                             const Cls& bb = *b.cast<Cls>();
                             return visitors(bb);
@@ -94,26 +94,26 @@ namespace myrtti
     ///
     /// VisitorStatic staticVisitor({
     ///     {
-    ///         &Exception::info(), [] {
+    ///         Exception::info(), [] {
     ///             std::cout << "STATIC: Exception\n";
     ///             return true;
     ///         }
     ///     },
     ///     {
-    ///         &ExceptionErrorOne::info(), [] {
+    ///         ExceptionErrorOne::info(), [] {
     ///             std::cout << "STATIC: ExceptionOne\n";
     ///             return true;
     ///         }
     ///     },
     ///     {
-    ///         &ExceptionErrorTwo::info(), [] {
+    ///         ExceptionErrorTwo::info(), [] {
     ///             std::cout << "STATIC: ExceptionTwo\n";
     ///             return true;
     ///         }
     ///     }
     /// });
     ///
-    /// staticVisitor.visit(&ExceptionErrorOne::info());
+    /// staticVisitor.visit(ExceptionErrorOne::info());
     ///
     struct VisitorStatic {
 

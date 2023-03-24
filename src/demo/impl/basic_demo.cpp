@@ -50,15 +50,15 @@ int main() {
     for (auto &o : objs) {
         cout << "o->rtti->name = " << o->rtti->name << "\n";
 
-        if (o->rtti == &CircleSquareFirstKid::info()) {
+        if (o->rtti == CircleSquareFirstKid::info()) {
             auto *cc = o->cast<CircleSquareFirstKid>();
             cout << "Discovered " << cc->rtti->name << ": "
                  << cc->numCircles << ", " << cc->numSquares << "\n";
         }
     }
 
-    cout << "CircleSquareFirstKid::info().name = " << CircleSquareFirstKid::info().name << "\n";
-    cout << "Object::info().name = " << Object::info().name << "\n";
+    cout << "CircleSquareFirstKid::info().name = " << CircleSquareFirstKid::info()->name << "\n";
+    cout << "Object::info().name = " << Object::info()->name << "\n";
 
     return 0;
 }
