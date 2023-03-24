@@ -41,7 +41,7 @@ Problem is that there is a quite restricted rtti support in C++.
    ...Or rather, we would prefer to enable it for restricted subset of classes, where we really need it.
 * Even though you're able to perform cross-casts, there is still no way for simple visitor implementation.
 
-As a conclusion whenever your aim are goals from above, you have to implement boiler plate code, add extra syntax, and sometimes even introduce additional godegen phases.
+As a conclusion whenever your aim are goals from above, you have to implement boiler plate code, add extra syntax, and sometimes even introduce additional codegen phases.
 
 ## Some existing RTTI solutions
 ### LLVM, classof
@@ -95,7 +95,7 @@ As a conclusion whenever your aim are goals from above, you have to implement bo
          defined in library, whilst children is to be defined is yet-unknown
          library-user apps.
 ### LLVM, RTTIExtend
-   *And alternative to previous solution when final hierarchy is not known*
+   *An alternative to previous solution when the final hierarchy is not known*
 
    (*details: [LLVM-style RTTI, RTTI for Open Class Hierarchies](https://llvm.org/docs/HowToSetUpLLVMStyleRTTI.html#rtti-for-open-class-hierarchies)*)
 
@@ -134,6 +134,7 @@ As a conclusion whenever your aim are goals from above, you have to implement bo
       * Much easier to design children:
          1. Inherit from RTTIExtends.
          2. Setup `child::ID` static variable.
+      * No need to update parent classes.
    * Cons:
       * Still doesn't support hierarchy, but potentially it might be improved though.
       * You still have to keep track of extra `child::ID`.
@@ -203,6 +204,7 @@ As a conclusion whenever your aim are goals from above, you have to implement bo
    * Pros:
       * Keeps hierarchy.
       * All RTTI-related definitions are gathered in .h file.
+      * No need to update parent classes.
    * Cons:
       * It it uses extra code generator to maintain RTTI stuff.
       * Proprietary, and we only can suppose what's behind some macros.
@@ -210,8 +212,8 @@ As a conclusion whenever your aim are goals from above, you have to implement bo
 ## Our solution: MyRTTI
 Our solution assumes single declaration point principle. So, there is only one
 point in code, where you mark class as a *runtime*:
-* If you're declaring class without macros, then you put few marks in the beginning of class. There is still "few", but single place where all those "few" are gathered.
-* If you're mentally prepared to suffer using macros, then this is a single point indeed.
+* If you're declaring class without macros, then you put few marks in the beginning of class. There is still word "few". And yet (for each class) there is only one place where all those "few" are gathered.
+* If you're mentally prepared to suffer using macros, then we can turn it into a single point indeed (see below).
 
 So the benefits all together are:
 * No need to put extracode in .cpp files
@@ -262,7 +264,7 @@ int main() {
 ```
 
 As you can see all RTTI-related marks are gathered in the beginning of class
-declaration. If you're not too disdained about macros we could refactor
+declaration. If you're not too disdained about macros we could rewrite
 structure declaration with rtti into this:
 
 ```c++
@@ -284,7 +286,7 @@ Cons
 * Syntax is ugly. In general such macros set supports `struct` only, because there
 are issues with stripping access/virtual modifiers from parents set. We prefer RTTI parents to be *public*, whilst for `class` it is *protected* by default.
 
-Well, in most of tasks we can live with that.
+Well, anyways, in most of tasks we can live with that.
 
 ### Magic behind
 
