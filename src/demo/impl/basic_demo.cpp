@@ -8,7 +8,7 @@
 using namespace std;
 using namespace myrtti;
 
-struct Shape : virtual Object, RTTI<Shape>
+struct Shape : RTTI<Shape>
 {
     DEFINE_RTTI(Shape, Object);
 };
@@ -23,23 +23,17 @@ struct Circle : Shape, RTTI<Circle>
     DEFINE_RTTI(Circle, Shape);
 };
 
-struct CircleSquare : Circle, Square, RTTI<CircleSquare>
-{
-    DEFINE_RTTI(CircleSquare, Circle, Square);
-
+RTTI_STRUCT_BEGIN(CircleSquare, (Circle, Square))
     CircleSquare(int numCircles, int numSquares)
     : numCircles(numCircles), numSquares(numSquares) {}
 
     int numCircles;
     int numSquares;
-};
+RTTI_STRUCT_END()
 
-struct CircleSquareFirstKid : CircleSquare, RTTI<CircleSquareFirstKid>
-{
-    DEFINE_RTTI(CircleSquareFirstKid, CircleSquare);
+RTTI_STRUCT_BEGIN(CircleSquareFirstKid, (CircleSquare))
     CircleSquareFirstKid() : CircleSquare(1,1) {}
-};
-
+RTTI_STRUCT_END()
 
 int main() {
 

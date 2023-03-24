@@ -40,7 +40,8 @@ private:
     class_id_t id = NextId();
 };
 
-struct RTTIMeta {
+struct Object {
+    // FIXME: must return ClassInfo* (not reference)
     static const ClassInfo& info() {
         static ClassInfo v("Object");
         return v;
@@ -74,8 +75,6 @@ protected:
     std::unordered_map<const ClassInfo*, void*> crossPtrs;
 };
 
-struct Object : virtual RTTIMeta {};
-
 // Problems:
 // 1. If we inharit RTTI from Parents, then we can't
 // use parents with non-default constructors.
@@ -90,7 +89,7 @@ struct Object : virtual RTTIMeta {};
 //    but also write something in declaration body.
 
 template <class T>
-struct RTTI : virtual RTTIMeta {
+struct RTTI : virtual Object {
     RTTI() {
         auto *superSelf = static_cast<T*>(this);
         this->rtti = &T::info();
@@ -105,5 +104,18 @@ struct RTTI : virtual RTTIMeta {
     } \
 
 } // namespace myrtti
+
+#define RTTI_ESC(...) __VA_ARGS__
+
+#define RTTI_STRUCT_AND_TRAITS_BEGIN(name, runtime_parents, traits) \
+struct name : RTTI_ESC traits, RTTI_ESC runtime_parents, RTTI<name> { \
+    DEFINE_RTTI(name, RTTI_ESC(runtime_parents)); \
+
+#define RTTI_STRUCT_BEGIN(name, runtime_parents) \
+struct name : RTTI_ESC runtime_parents, RTTI<name> { \
+    DEFINE_RTTI(name, RTTI_ESC runtime_parents); \
+
+#define RTTI_STRUCT_END() };
+
 
 #endif

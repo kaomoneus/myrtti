@@ -39,7 +39,7 @@ struct Hierarchy {
     }
 
     /// @brief Checks child-parent relation.
-    /// NOTE: this is a duplicated feature of RTTIMeta::cast<T>
+    /// NOTE: this is a duplicated feature of Object::cast<T>
     ///   the latter applicable for <instance, another class> pair,
     ///   whilst the former applicable for pure <ClassInfo, ClassInfo> pair.
     ///
