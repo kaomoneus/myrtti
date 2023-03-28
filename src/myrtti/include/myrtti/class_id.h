@@ -16,6 +16,13 @@ struct class_id_t {
     bool operator==(const class_id_t& rhs) const noexcept {
         return value == rhs.value;
     }
+
+    struct hash {
+        uint64_t operator()(const class_id_t& clid) {
+            return clid.value;
+        }
+    };
+
     uint64_t value;
 };
 

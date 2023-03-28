@@ -21,6 +21,18 @@ struct Hierarchy {
     /// @param parents parents list
     template<typename ArrayT>
     void add(const ClassInfo *cls, const ArrayT& parents) {
+
+        // TODO: first move this into .cpp, then add class_id validation.
+        //
+        // auto [it, added] = added_clids.insert(cls->getId());
+        // if (!added) {
+        //     std::ostringstream strm;
+        //     strm << "Class " << cls
+        //          << " has colliding id. Unable to maintain hierarchy"
+        //          << " consider changing CRC initial state."
+        //     throw std::runtime_error(strm.str());
+        // }
+
         dag.add(cls, parents);
 
 
@@ -93,8 +105,14 @@ private:
     // std::shared_ptr<DAG<const ClassInfo*>> dag;
     DAG<const ClassInfo*> dag;
 
-    using classes_set_t = std::unordered_set<const ClassInfo*>;
+    // FIXME: Unable to use ClassInfo complete type due to cycled deps, see
+    // previous comment to move some code into .cpp and then
+    // apply code below:
+    // std::unordered_set<class_id_t, class_id_t::hash> added_clids;
 
+
+    // TODO: consider using class_id_t instead.
+    using classes_set_t = std::unordered_set<const ClassInfo*>;
     std::unordered_map<const ClassInfo*, classes_set_t> ancestorsCache;
 };
 
