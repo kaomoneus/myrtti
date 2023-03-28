@@ -39,9 +39,9 @@ namespace myrtti
         void init(std::function<bool(const Cls&)>&& ...visitors) {
             (
                 [&] {
-                    std::cout << std::hex
-                    << "VISITOR: Registered handler for "
-                    << Cls::info() << " " << Cls::info()->name << "\n";
+
+                    std::cout << "VISITOR: Registered handler for "
+                              << Cls::info() << "\n";
                     visitorsMap.emplace(
                         Cls::info(),
                         [=] (const Object& b) {
@@ -54,13 +54,14 @@ namespace myrtti
         }
 
     bool visit(const Object& b, bool notFoundResult = true) {
-        std::cout << "VISITOR: Unwinding visit for class " << b.rtti->name << "\n";
+        std::cout << "VISITOR: Unwinding visit for class "
+                  << b.rtti->name << "\n";
 
         bool neverVisited = Hierarchy::instance()->destruct(
             b.rtti,
             [&] (const ClassInfo* cls) {
                 std::cout << std::hex
-                << "VISITOR:   Visiting class " << cls << " " << cls->name << "\n";
+                << "VISITOR:   Visiting class " << cls << "\n";
                 auto found = visitorsMap.find(cls);
 
                 if (found != end(visitorsMap)) {
@@ -124,13 +125,13 @@ namespace myrtti
         ) : visitorsMap(handlers) {}
 
         bool visit(const ClassInfo* b) {
-            std::cout << "STATIC VISITOR: Unwinding visit for class " << b->name << "\n";
+            std::cout << "STATIC VISITOR: Unwinding visit for class " << b << "\n";
 
             bool neverVisited = Hierarchy::instance()->destruct(
                 b,
                 [&] (const ClassInfo* cls) {
                     std::cout << std::hex
-                    << "STATIC VISITOR:   Visiting class " << cls << " " << cls->name << "\n";
+                    << "STATIC VISITOR:   Visiting class " << cls << "\n";
                     auto found = visitorsMap.find(cls);
 
                     if (found != end(visitorsMap)) {

@@ -1,4 +1,5 @@
 #include <iostream>
+#include <iomanip>
 #include <memory>
 #include <vector>
 
@@ -49,6 +50,7 @@ int main() {
 
     for (auto &o : objs) {
         cout << "o->rtti->name = " << o->rtti->name << "\n";
+        cout << "    classId = " << o->rtti->getId() << "\n";
 
         if (o->rtti == CircleSquareFirstKid::info()) {
             auto *cc = o->cast<CircleSquareFirstKid>();

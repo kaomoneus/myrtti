@@ -136,4 +136,7 @@ inline bool isa(const Object& o) { return T::class_id == o.rtti->getId();}
 
 } // namespace myrtti
 
+std::ostream& operator <<(std::ostream& s, const myrtti::ClassInfo* clid);
+std::ostream& operator <<(std::ostream& s, const myrtti::ClassInfo& clid);
+
 #endif
