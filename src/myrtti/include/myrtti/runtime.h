@@ -5,7 +5,8 @@
 #include "myrtti/hierarchy.h"
 
 #include <array>
-#include <iostream>
+#include <iosfwd>
+// #include <iostream>
 #include <utility>
 #include <unordered_map>
 
@@ -21,12 +22,13 @@ struct ClassInfo {
         return {Parents::info()...};
     }
 
-    ClassInfo(const char* name) : name(name) {
+    ClassInfo(const char* name, class_id_t classId) : name(name), id(classId) {
         Hierarchy::instance()->add(this, std::array<const ClassInfo*, 0>());
     }
 
     template<typename ArrayT>
-    ClassInfo(const char* name, const ArrayT& parents) : name(name) {
+    ClassInfo(const char* name, class_id_t classId, const ArrayT& parents)
+    : name(name), id(classId) {
         // std::cout << "Registered class: " << name << "\n";
         for (const ClassInfo* p : parents) {
             // std::cout << "    parent: " << p->name << "\n";
@@ -34,16 +36,15 @@ struct ClassInfo {
         Hierarchy::instance()->add(this, parents);
     }
 
-    unsigned getId() { return id; }
+    class_id_t getId() const { return id; }
 private:
-    class_id_t NextId() { static class_id_t id = PREFIRST_CLASS_ID; return ++id; }
-    class_id_t id = NextId();
+    class_id_t id;
 };
 
 struct Object {
-    // FIXME: must return ClassInfo* (not reference)
+    static constexpr class_id_t class_id = class_id_t("Object");
     static const ClassInfo* info() {
-        static ClassInfo v("Object");
+        static ClassInfo v("Object", class_id);
         return &v;
     }
 
@@ -97,13 +98,14 @@ struct RTTI : virtual Object {
     }
 };
 
+// We use constexpr crc64 implementation, written by Sam Belliveau
+// https://gist.github.com/Sam-Belliveau/72ba4a8710324ce7a1ac1789d64ec831
 #define DEFINE_RTTI(cn, ...) \
+    static constexpr class_id_t class_id = class_id_t(#cn); \
     static const ClassInfo* info() { \
-        static ClassInfo v(#cn, ClassInfo::mk_class_info_array<__VA_ARGS__>()); \
+        static ClassInfo v(#cn, class_id, ClassInfo::mk_class_info_array<__VA_ARGS__>()); \
         return &v; \
     } \
-
-} // namespace myrtti
 
 #define RTTI_ESC(...) __VA_ARGS__
 
@@ -117,5 +119,6 @@ struct name : RTTI_ESC runtime_parents, RTTI<name> { \
 
 #define RTTI_STRUCT_END() };
 
+} // namespace myrtti
 
 #endif
