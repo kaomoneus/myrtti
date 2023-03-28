@@ -60,5 +60,8 @@ int main() {
     cout << "CircleSquareFirstKid::info().name = " << CircleSquareFirstKid::info()->name << "\n";
     cout << "Object::info().name = " << Object::info()->name << "\n";
 
+    cout << "isa<Square>(objs[1]): " << isa<Square>(objs[1].get()) << "\n";
+    cout << "isa<Square>(objs[2]): " << isa<Square>(objs[2].get()) << "\n";
+
     return 0;
 }

@@ -119,6 +119,21 @@ struct name : RTTI_ESC runtime_parents, RTTI<name> { \
 
 #define RTTI_STRUCT_END() };
 
+template<class T>
+inline T* dyn_cast(Object* o) {return o->cast<T>();}
+template<class T>
+inline T& dyn_cast(Object& o) {return *o.cast<T>();}
+
+template<class T>
+inline const T* dyn_cast(const Object* o) {return o->cast<T>();}
+template<class T>
+inline const T& dyn_cast(const Object& o) {return *o.cast<T>();}
+
+template<class T>
+inline bool isa(const Object* o) { return T::class_id == o->rtti->getId();}
+template<class T>
+inline bool isa(const Object& o) { return T::class_id == o.rtti->getId();}
+
 } // namespace myrtti
 
 #endif
