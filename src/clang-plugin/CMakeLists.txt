@@ -5,6 +5,7 @@
 
 # Also consider forsing to use Clang as a compiler
 # if (MYRTTI_CLANG_ROOT AND (CMAKE_CXX_COMPILER_ID STREQUAL "Clang"))
+
 if (MYRTTI_CLANG_ROOT)
 
     message("Using CLANG dir: ${MYRTTI_CLANG_ROOT}")
@@ -46,7 +47,5 @@ else()
     # if (NOT (CMAKE_CXX_COMPILER_ID STREQUAL "Clang"))
     #     message("    * in order to enable myrtti_plugin, you should use clang as a compiler. Currently you use: ${MAKE_CXX_COMPILER_ID}")
     # endif()
-
-    message("    ...and the last reason: it is still not implemented. Sorry.")
 
 endif()
