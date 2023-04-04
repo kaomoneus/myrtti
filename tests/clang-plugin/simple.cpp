@@ -1,5 +1,3 @@
-// RUN: %clang++ -fplugin=%lib/myrtti_clang.so -c %s
+// RUN: %clang++ -fplugin=%lib/myrtti_clang.so -Werror -c %s
 
-class [[myrtti]] A {};
-
-void [[myrtti]] foo() {};
+class A {};

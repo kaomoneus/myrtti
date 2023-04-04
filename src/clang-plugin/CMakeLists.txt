@@ -2,6 +2,9 @@
 # So we ought to leave some credits to:
 #   Alex Denisov: https://github.com/AlexDenisov/ToyClangPlugin
 #   Yoshimasa Niwa: https://gist.github.com/niw/d46da15ba2904fbf0e9ea0549d8907f6
+
+# Also consider forsing to use Clang as a compiler
+# if (MYRTTI_CLANG_ROOT AND (CMAKE_CXX_COMPILER_ID STREQUAL "Clang"))
 if (MYRTTI_CLANG_ROOT)
 
     message("Using CLANG dir: ${MYRTTI_CLANG_ROOT}")
@@ -12,10 +15,6 @@ if (MYRTTI_CLANG_ROOT)
     find_package(LLVM REQUIRED PATHS ${MYRTTI_CLANG_ROOT} NO_DEFAULT_PATH)
     find_package(Clang REQUIRED PATHS ${MYRTTI_CLANG_ROOT} NO_DEFAULT_PATH)
 
-    # Use given `clang` toolchain.
-    set(CMAKE_CXX_COMPILER "${LLVM_TOOLS_BINARY_DIR}/clang++")
-    set(CMAKE_C_COMPILER "${LLVM_TOOLS_BINARY_DIR}/clang")
-
     list(APPEND CMAKE_MODULE_PATH "${LLVM_CMAKE_DIR}")
     # Use `add_llvm_...` functions.
     include(AddLLVM)
@@ -24,35 +23,30 @@ if (MYRTTI_CLANG_ROOT)
     # Use LLVM and clang headers.
     include_directories(${LLVM_INCLUDE_DIRS} ${CLANG_INCLUDE_DIRS})
 
+    # FIXME: This part of code doesn't work. Linker fails with syntax error on line 1.
+    #
+    # if( NOT MSVC ) # MSVC mangles symbols differently, and
+    #                # myrtti_plugin.exports contains C++ symbols.
+    #     if( NOT LLVM_REQUIRES_RTTI )
+    #         if( NOT LLVM_REQUIRES_EH )
+    #             set(LLVM_EXPORTED_SYMBOL_FILE ${CMAKE_CURRENT_SOURCE_DIR}/impl/myrtti_plugin.exports)
+    #         endif()
+    #     endif()
+    # endif()
 
-    macro(add_clang_plugin name)
-        set (srcs ${ARGN})
+    add_llvm_library(myrtti_clang MODULE impl/myrtti_plugin.cpp PLUGIN_TOOL clang)
 
-        add_library( ${name} SHARED ${srcs} )
+else()
 
-        target_include_directories(${name} PUBLIC ${LLVM_INCLUDE_DIRS})
-        if (LLVM IN_LIST LLVM_AVAILABLE_LIBS)
-            target_link_libraries(${name} LLVM clangTooling)
-        else()
-            target_link_libraries(${name} LLVMSupport clangTooling)
-        endif()
+    message("clang plugin is disabled. There are following reasons:")
+    if (NOT MYRTTI_CLANG_ROOT)
+        message("    * in order to enable myrtti_plugin, you should provide MYRTTI_CLANG_ROOT")
+    endif()
 
-        set_target_properties( ${name} PROPERTIES LINK_FlAGS
-            "-exported_symbols_list ${name}.exports")
+    # if (NOT (CMAKE_CXX_COMPILER_ID STREQUAL "Clang"))
+    #     message("    * in order to enable myrtti_plugin, you should use clang as a compiler. Currently you use: ${MAKE_CXX_COMPILER_ID}")
+    # endif()
 
-        foreach (user_lib ${USER_LIBS})
-            target_link_libraries( ${name} ${user_lib} )
-        endforeach()
-
-    endmacro(add_clang_plugin)
-
-    add_llvm_library(myrtti_clang MODULE
-        impl/main.cpp
-        PLUGIN_TOOL clang
-    )
-
-    # add_clang_plugin(myrtti_clang
-    #     impl/main.cpp
-    # )
+    message("    ...and the last reason: it is still not implemented. Sorry.")
 
 endif()
