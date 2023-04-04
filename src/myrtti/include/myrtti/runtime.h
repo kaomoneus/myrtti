@@ -5,10 +5,12 @@
 #include "myrtti/hierarchy.h"
 
 #include <array>
+#include <cstdlib>
 #include <iosfwd>
 // #include <iostream>
 #include <utility>
 #include <unordered_map>
+#include <type_traits>
 
 namespace myrtti {
 
@@ -42,6 +44,8 @@ private:
 };
 
 struct Object {
+    virtual ~Object() = default;
+
     static constexpr class_id_t class_id = class_id_t("Object");
     static const ClassInfo* info() {
         static ClassInfo v("Object", class_id);
@@ -51,23 +55,45 @@ struct Object {
     // We intentinally keep rtti field public:
     const ClassInfo* rtti = info();
 
-    template<class T>
-    T* cast() {
+    template<class T, std::enable_if_t<!std::is_pointer<T>::value, bool> = true>
+    T& cast() {
         auto found = this->crossPtrs.find(T::info());
-        if (/*[[likely]]*/ found != end(this->crossPtrs))
-            // FIXME: cross-cast won't work! Need to use hierarchy.
-            return static_cast<T*>(found->second);
+        if (/*[[likely]]*/ found != end(this->crossPtrs)) {
+            return *static_cast<T*>(found->second);
+        }
+        // Unable to cast, unable to return null, panic.
+        abort();
+    }
+
+    template<class T, std::enable_if_t<std::is_pointer<T>::value, bool> = true>
+    T cast() {
+        using _T = std::remove_pointer_t<T>;
+        auto found = this->crossPtrs.find(_T::info());
+        if (/*[[likely]]*/ found != end(this->crossPtrs)) {
+            return static_cast<T>(found->second);
+        }
         return nullptr;
     }
 
-    template<class T>
-    const T* cast() const {
-        auto *tInfo = T::info();
-        auto found = this->crossPtrs.find(tInfo);
+    template<class T, std::enable_if_t<!std::is_pointer<T>::value, bool> = true>
+    const T& cast() const {
+        auto found = this->crossPtrs.find(T::info());
+        if (/*[[likely]]*/ found != end(this->crossPtrs)) {
+            return *static_cast<T*>(found->second);
+        }
+        // Unable to cast, unable to return null, panic.
+        abort();
+    }
+
+    template<class T, std::enable_if_t<std::is_pointer<T>::value, bool> = true>
+    const T cast() const {
+        using _T = std::remove_pointer_t<T>;
+        auto found = this->crossPtrs.find(_T::info());
         if (found != end(this->crossPtrs))
-            return static_cast<T*>(found->second);
+            return static_cast<T>(found->second);
         return nullptr;
     }
+
 protected:
     template<class T>
     friend class RTTI;
@@ -102,32 +128,33 @@ struct RTTI : virtual Object {
 // https://gist.github.com/Sam-Belliveau/72ba4a8710324ce7a1ac1789d64ec831
 #define DEFINE_RTTI(cn, ...) \
     static constexpr class_id_t class_id = class_id_t(#cn); \
-    static const ClassInfo* info() { \
-        static ClassInfo v(#cn, class_id, ClassInfo::mk_class_info_array<__VA_ARGS__>()); \
+    static const ::myrtti::ClassInfo* info() { \
+        static ClassInfo v(#cn, class_id, ::myrtti::ClassInfo::mk_class_info_array<__VA_ARGS__>()); \
         return &v; \
     } \
 
 #define RTTI_ESC(...) __VA_ARGS__
 
 #define RTTI_STRUCT_AND_TRAITS_BEGIN(name, runtime_parents, traits) \
-struct name : RTTI_ESC traits, RTTI_ESC runtime_parents, RTTI<name> { \
+struct name : RTTI_ESC traits, RTTI_ESC runtime_parents, ::myrtti::RTTI<name> { \
     DEFINE_RTTI(name, RTTI_ESC(runtime_parents)); \
 
+#define RTTI_STRUCT_ROOT_BEGIN(name) \
+struct name : ::myrtti::RTTI<name> { \
+    DEFINE_RTTI(name, ::myrtti::Object); \
+
 #define RTTI_STRUCT_BEGIN(name, runtime_parents) \
-struct name : RTTI_ESC runtime_parents, RTTI<name> { \
+struct name : RTTI_ESC runtime_parents, ::myrtti::RTTI<name> { \
     DEFINE_RTTI(name, RTTI_ESC runtime_parents); \
 
 #define RTTI_STRUCT_END() };
 
-template<class T>
-inline T* dyn_cast(Object* o) {return o->cast<T>();}
-template<class T>
-inline T& dyn_cast(Object& o) {return *o.cast<T>();}
+template<class T, std::enable_if_t<std::is_pointer<T>::value, bool> = true>
+inline T dyn_cast(Object* o) {return o->cast<T>();}
 
-template<class T>
-inline const T* dyn_cast(const Object* o) {return o->cast<T>();}
-template<class T>
-inline const T& dyn_cast(const Object& o) {return *o.cast<T>();}
+template<class T, std::enable_if_t<!std::is_pointer<T>::value, bool> = true>
+inline T& dyn_cast(Object& o) {return o.cast<T>();}
+
 
 template<class T>
 inline bool isa(const Object* o) { return T::class_id == o->rtti->getId();}

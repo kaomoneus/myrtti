@@ -45,7 +45,7 @@ namespace myrtti
                     visitorsMap.emplace(
                         Cls::info(),
                         [=] (const Object& b) {
-                            const Cls& bb = *b.cast<Cls>();
+                            const Cls& bb = b.cast<Cls>();
                             return visitors(bb);
                         }
                     );

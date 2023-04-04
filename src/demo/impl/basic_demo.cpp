@@ -52,7 +52,7 @@ int main() {
         cout << "    classId = " << o->rtti->getId() << "\n";
 
         if (o->rtti == CircleSquareFirstKid::info()) {
-            auto *cc = o->cast<CircleSquareFirstKid>();
+            auto *cc = o->cast<CircleSquareFirstKid*>();
             cout << "Discovered " << cc->rtti->name << ": "
                  << cc->numCircles << ", " << cc->numSquares << "\n";
         }
