@@ -8,12 +8,21 @@ set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/bin )
 set(CMAKE_LIBRARY_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/lib )
 set(CMAKE_ARCHIVE_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/lib )
 
-set(CMAKE_CXX_FLAGS "-fno-rtti")
+set(CMAKE_CXX_FLAGS "-Werror")
 
-option(MYRTTI_CLANG_ROOT "Root to clang and llvm dirs.")
 option(MYRTTI_ENABLE_TESTS "Enable tests" ON)
+option(MYRTTI_ENABLE_TESTS_BENCHMARK "Enable benchmark test (requires google/benchmark lib to be installed)" OFF)
+
+option(MYRTTI_ENABLE_CLANG_PLUGIN "Enable clang plugin (not implemented yet)" OFF)
+option(MYRTTI_CLANG_ROOT "Root to clang and llvm dirs (required for clang plugin only).")
 
 add_subdirectory (src/myrtti)
 add_subdirectory (src/demo)
-add_subdirectory (src/clang-plugin)
-add_subdirectory (tests)
+
+if (MYRTTI_ENABLE_CLANG_PLUGIN)
+    add_subdirectory (src/clang-plugin)
+endif()
+
+if (MYRTTI_ENABLE_TESTS)
+    add_subdirectory (tests)
+endif()
