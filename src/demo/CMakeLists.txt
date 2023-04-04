@@ -8,7 +8,7 @@ add_executable(
 
 target_link_libraries(
     ${BASIC}
-    libmyrtti
+    myrtti
 )
 
 add_executable(
@@ -18,5 +18,5 @@ add_executable(
 
 target_link_libraries(
     ${VISITOR}
-    libmyrtti
+    myrtti
 )
