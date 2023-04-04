@@ -6,35 +6,10 @@
 
 using namespace myrtti;
 
-#define INHERIT_ME(baseClass, newClass) \
-    RTTI_STRUCT_BEGIN(newClass, (baseClass)) \
-    RTTI_STRUCT_END()
+using VirtualBase = myrtti::Object;
 
-RTTI_STRUCT_ROOT_BEGIN(Base) \
-RTTI_STRUCT_END()
-
-INHERIT_ME(Base, Wide1);
-INHERIT_ME(Wide1, Wide2);
-INHERIT_ME(Wide2, Wide3);
-INHERIT_ME(Wide3, Wide4);
-INHERIT_ME(Wide4, Wide5);
-INHERIT_ME(Wide5, Wide6);
-INHERIT_ME(Wide6, Wide7);
-INHERIT_ME(Wide7, Wide8);
-INHERIT_ME(Wide8, Wide9);
-INHERIT_ME(Wide9, WideFinal);
-
-INHERIT_ME(Base, Deep1);
-INHERIT_ME(Deep1, Deep2);
-INHERIT_ME(Deep2, Deep3);
-INHERIT_ME(Deep3, Deep4);
-INHERIT_ME(Deep4, Deep5);
-INHERIT_ME(Deep5, Deep6);
-INHERIT_ME(Deep6, Deep7);
-INHERIT_ME(Deep7, Deep8);
-INHERIT_ME(Deep8, Deep9);
-INHERIT_ME(Deep9, DeepFinal);
-
+#include "inherit_me_with_myrtti.inc"
+#include "hierarchy_20items.inc"
 
 class InheritanceFixture : public benchmark::Fixture
 {
@@ -44,9 +19,11 @@ public:
     {
         this->deep = new DeepFinal;
         this->deepBase = this->deep;
+        this->deepVirtualBase = this->deep;
 
         this->wide = new WideFinal;
         this->wideBase = this->wide;
+        this->wideVirtualBase = this->wide;
     }
 
     /// After each run, clear the vector of random integers.
@@ -63,14 +40,19 @@ public:
         }
     }
 
-    DeepFinal* deep{ nullptr };
-    Object* deepBase{ nullptr };
+    DeepFinal* deep;
+    DeepRoot* deepBase;
+    VirtualBase* deepVirtualBase;
 
-    WideFinal* wide{ nullptr };
-    Object* wideBase{ nullptr };
+    WideFinal* wide;
+    WideRoot* wideBase;
+    VirtualBase* wideVirtualBase;
 };
 
-constexpr int NUM_OPERATIONS = 2000000;
+constexpr int NUM_OPERATIONS = 1000000;
+
+#define LEGACY_DYN_CAST(To, From) auto *r = dynamic_cast<To*>(From); if (!r) abort(); benchmark::DoNotOptimize(r);
+#define MYRTTI_DYN_CAST(To, From) auto *r = myrtti::dyn_cast<To*>(From); if (!r) abort(); benchmark::DoNotOptimize(r);
 
 // ----------------------------------------------------------------------------
 // Cast from a base to the derrived type.
@@ -79,7 +61,7 @@ BENCHMARK_F(InheritanceFixture, deep_fromBase_dynamic_cast)(benchmark::State& st
 {
     for (auto _ : state) {
         for (int i = 0; i!=NUM_OPERATIONS;++i) {
-            benchmark::DoNotOptimize(dynamic_cast<DeepFinal*>(this->deepBase));
+            LEGACY_DYN_CAST(DeepFinal, this->deepBase);
         }
     }
 }
@@ -88,7 +70,28 @@ BENCHMARK_F(InheritanceFixture, deep_fromBase_myrtti)(benchmark::State& state)
 {
     for (auto _ : state) {
         for (int i = 0; i!=NUM_OPERATIONS;++i) {
-            benchmark::DoNotOptimize(myrtti::dyn_cast<DeepFinal*>(this->deepBase));
+            MYRTTI_DYN_CAST(DeepFinal, this->deepBase);
+        }
+    }
+}
+
+// ----------------------------------------------------------------------------
+// Cast from a virtual base to the derrived type.
+// ----------------------------------------------------------------------------
+BENCHMARK_F(InheritanceFixture, deep_fromVirtualBase_dynamic_cast)(benchmark::State& state)
+{
+    for (auto _ : state) {
+        for (int i = 0; i!=NUM_OPERATIONS;++i) {
+            LEGACY_DYN_CAST(DeepFinal, this->deepVirtualBase);
+        }
+    }
+}
+
+BENCHMARK_F(InheritanceFixture, deep_fromVirtualBase_myrtti)(benchmark::State& state)
+{
+    for (auto _ : state) {
+        for (int i = 0; i!=NUM_OPERATIONS;++i) {
+            MYRTTI_DYN_CAST(DeepFinal, this->deepVirtualBase);
         }
     }
 }
@@ -100,7 +103,7 @@ BENCHMARK_F(InheritanceFixture, wide_fromBase_dynamic_cast)(benchmark::State& st
 {
     for (auto _ : state) {
         for (int i = 0; i!=NUM_OPERATIONS;++i) {
-            benchmark::DoNotOptimize(dynamic_cast<WideFinal*>(this->wideBase));
+            LEGACY_DYN_CAST(WideFinal, this->wideBase);
         }
     }
 }
@@ -109,7 +112,28 @@ BENCHMARK_F(InheritanceFixture, wide_fromBase_myrtti)(benchmark::State& state)
 {
     for (auto _ : state) {
         for (int i = 0; i!=NUM_OPERATIONS;++i) {
-            benchmark::DoNotOptimize(myrtti::dyn_cast<WideFinal*>(this->wideBase));
+            MYRTTI_DYN_CAST(WideFinal, this->wideBase);
+        }
+    }
+}
+
+// ----------------------------------------------------------------------------
+// Cast from a virtual base to the derrived type.
+// ----------------------------------------------------------------------------
+BENCHMARK_F(InheritanceFixture, wide_fromVirtualBase_dynamic_cast)(benchmark::State& state)
+{
+    for (auto _ : state) {
+        for (int i = 0; i!=NUM_OPERATIONS;++i) {
+            LEGACY_DYN_CAST(WideFinal, this->wideVirtualBase);
+        }
+    }
+}
+
+BENCHMARK_F(InheritanceFixture, wide_fromVirtualBase_myrtti)(benchmark::State& state)
+{
+    for (auto _ : state) {
+        for (int i = 0; i!=NUM_OPERATIONS;++i) {
+            MYRTTI_DYN_CAST(WideFinal, this->wideVirtualBase);
         }
     }
 }
@@ -121,7 +145,7 @@ BENCHMARK_F(InheritanceFixture, deep_toBase_dynamic_cast)(benchmark::State& stat
 {
     for (auto _ : state) {
         for (int i = 0; i!=NUM_OPERATIONS;++i) {
-            benchmark::DoNotOptimize(dynamic_cast<Base*>(this->deep));
+            LEGACY_DYN_CAST(DeepRoot, this->deep);
         }
     }
 }
@@ -130,7 +154,28 @@ BENCHMARK_F(InheritanceFixture, deep_toBase_myrtti)(benchmark::State& state)
 {
     for (auto _ : state) {
         for (int i = 0; i!=NUM_OPERATIONS;++i) {
-            benchmark::DoNotOptimize(myrtti::dyn_cast<Base*>(this->deep));
+            MYRTTI_DYN_CAST(DeepRoot, this->deep);
+        }
+    }
+}
+
+// ----------------------------------------------------------------------------
+// Cast from a derrived type to the base type.
+// ----------------------------------------------------------------------------
+BENCHMARK_F(InheritanceFixture, deep_toVirtualBase_dynamic_cast)(benchmark::State& state)
+{
+    for (auto _ : state) {
+        for (int i = 0; i!=NUM_OPERATIONS;++i) {
+            LEGACY_DYN_CAST(VirtualBase, this->deep);
+        }
+    }
+}
+
+BENCHMARK_F(InheritanceFixture, deep_toVirtualBase_myrtti)(benchmark::State& state)
+{
+    for (auto _ : state) {
+        for (int i = 0; i!=NUM_OPERATIONS;++i) {
+            MYRTTI_DYN_CAST(VirtualBase, this->deep);
         }
     }
 }
@@ -142,7 +187,7 @@ BENCHMARK_F(InheritanceFixture, wide_toBase_dynamic_cast)(benchmark::State& stat
 {
     for (auto _ : state) {
         for (int i = 0; i!=NUM_OPERATIONS;++i) {
-            benchmark::DoNotOptimize(dynamic_cast<Base*>(this->wide));
+            LEGACY_DYN_CAST(WideRoot, this->wide);
         }
     }
 }
@@ -151,7 +196,29 @@ BENCHMARK_F(InheritanceFixture, wide_toBase_myrtti)(benchmark::State& state)
 {
     for (auto _ : state) {
         for (int i = 0; i!=NUM_OPERATIONS;++i) {
-            benchmark::DoNotOptimize(myrtti::dyn_cast<Base*>(this->wide));
+            MYRTTI_DYN_CAST(WideRoot, this->wide);
+        }
+    }
+}
+
+// ----------------------------------------------------------------------------
+// Cast from a derrived type to the virtual base type.
+// ----------------------------------------------------------------------------
+
+BENCHMARK_F(InheritanceFixture, wide_toVirtualBase_dynamic_cast)(benchmark::State& state)
+{
+    for (auto _ : state) {
+        for (int i = 0; i!=NUM_OPERATIONS;++i) {
+            LEGACY_DYN_CAST(VirtualBase, this->wide);
+        }
+    }
+}
+
+BENCHMARK_F(InheritanceFixture, wide_toVirtualBase_myrtti)(benchmark::State& state)
+{
+    for (auto _ : state) {
+        for (int i = 0; i!=NUM_OPERATIONS;++i) {
+            MYRTTI_DYN_CAST(VirtualBase, this->wide);
         }
     }
 }
@@ -163,7 +230,7 @@ BENCHMARK_F(InheritanceFixture, deep_toSelf_dynamic_cast)(benchmark::State& stat
 {
     for (auto _ : state) {
         for (int i = 0; i!=NUM_OPERATIONS;++i) {
-            benchmark::DoNotOptimize(dynamic_cast<DeepFinal*>(this->deep));
+            LEGACY_DYN_CAST(DeepFinal, this->deep);
         }
     }
 }
@@ -172,7 +239,7 @@ BENCHMARK_F(InheritanceFixture, deep_toSelf_myrtti)(benchmark::State& state)
 {
     for (auto _ : state) {
         for (int i = 0; i!=NUM_OPERATIONS;++i) {
-            benchmark::DoNotOptimize(myrtti::dyn_cast<DeepFinal*>(this->deep));
+            MYRTTI_DYN_CAST(DeepFinal, this->deep);
         }
     }
 }
@@ -184,7 +251,7 @@ BENCHMARK_F(InheritanceFixture, wide_toSelf_dynamic_cast)(benchmark::State& stat
 {
     for (auto _ : state) {
         for (int i = 0; i!=NUM_OPERATIONS;++i) {
-            benchmark::DoNotOptimize(dynamic_cast<WideFinal*>(this->wide));
+            LEGACY_DYN_CAST(WideFinal, this->wide);
         }
     }
 }
@@ -193,7 +260,7 @@ BENCHMARK_F(InheritanceFixture, wide_toSelf_myrtti)(benchmark::State& state)
 {
     for (auto _ : state) {
         for (int i = 0; i!=NUM_OPERATIONS;++i) {
-            benchmark::DoNotOptimize(myrtti::dyn_cast<WideFinal*>(this->wide));
+            MYRTTI_DYN_CAST(WideFinal, this->wide);
         }
     }
 }

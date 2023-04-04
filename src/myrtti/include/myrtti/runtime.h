@@ -32,9 +32,9 @@ struct ClassInfo {
     ClassInfo(const char* name, class_id_t classId, const ArrayT& parents)
     : name(name), id(classId) {
         // std::cout << "Registered class: " << name << "\n";
-        for (const ClassInfo* p : parents) {
-            // std::cout << "    parent: " << p->name << "\n";
-        }
+        // for (const ClassInfo* p : parents) {
+        //     std::cout << "    parent: " << p->name << "\n";
+        // }
         Hierarchy::instance()->add(this, parents);
     }
 
@@ -55,8 +55,13 @@ struct Object {
     // We intentinally keep rtti field public:
     const ClassInfo* rtti = info();
 
+    //
+    // dyn_cast
+    //
+
     template<class T, std::enable_if_t<!std::is_pointer<T>::value, bool> = true>
     T& cast() {
+        // TODO: Validate that T::info() takes longer time for polymorphic types.
         auto found = this->crossPtrs.find(T::info());
         if (/*[[likely]]*/ found != end(this->crossPtrs)) {
             return *static_cast<T*>(found->second);
@@ -99,7 +104,8 @@ protected:
     friend class RTTI;
 
     // TODO: randomize hashing routine.
-    std::unordered_map<const ClassInfo*, void*> crossPtrs;
+    // Note: rtti field should be initialized before crossPtrs.
+    std::unordered_map<const ClassInfo*, void*> crossPtrs{{rtti, this}};
 };
 
 // Problems:
@@ -115,14 +121,24 @@ protected:
 //    so then for RTTI definition we should not only to provide a tricky parent,
 //    but also write something in declaration body.
 
-template <class T>
+template <class Class>
 struct RTTI : virtual Object {
     RTTI() {
-        auto *superSelf = static_cast<T*>(this);
-        this->rtti = T::info();
+        auto *superSelf = static_cast<Class*>(this);
+        this->rtti = Class::info();
         this->crossPtrs[this->rtti] = superSelf;
     }
 };
+
+template<class T>
+using strip_type = std::remove_pointer_t<
+    std::remove_const_t<
+        std::remove_reference_t<T>
+    >
+>;
+
+template<class B, class T>
+using is_base_of = std::is_base_of<strip_type<B>, strip_type<T>>;
 
 // We use constexpr crc64 implementation, written by Sam Belliveau
 // https://gist.github.com/Sam-Belliveau/72ba4a8710324ce7a1ac1789d64ec831
@@ -131,7 +147,7 @@ struct RTTI : virtual Object {
     static const ::myrtti::ClassInfo* info() { \
         static ClassInfo v(#cn, class_id, ::myrtti::ClassInfo::mk_class_info_array<__VA_ARGS__>()); \
         return &v; \
-    } \
+    }
 
 #define RTTI_ESC(...) __VA_ARGS__
 
