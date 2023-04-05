@@ -7,7 +7,7 @@
 #include <array>
 #include <cstdlib>
 #include <iosfwd>
-// #include <iostream>
+#include <iostream>
 #include <utility>
 #include <unordered_map>
 #include <type_traits>
@@ -46,6 +46,10 @@ private:
 struct Object {
     virtual ~Object() = default;
 
+    Object() {
+        reportCrossPtrs();
+    }
+
     static constexpr class_id_t class_id = class_id_t("Object");
     static const ClassInfo* info() {
         static ClassInfo v("Object", class_id);
@@ -54,6 +58,22 @@ struct Object {
 
     // We intentinally keep rtti field public:
     const ClassInfo* rtti = info();
+
+    void reportCrossPtrs() {
+        #ifdef DEBUG_REPORT_CROSS_PTRS
+        std::size_t bc = crossPtrs.bucket_count();
+        std::cout << "CrossPtrs (" << rtti->name << "):\n";
+        std::cout << "  Bucket count: " << bc << "\n";
+        for (std::size_t bucket = 0; bucket!=bc; ++bucket) {
+            std::size_t bs = crossPtrs.bucket_size(bucket);
+            std::cout << "    Bucket[" << bucket << "] size: " << crossPtrs.bucket_size(bucket) << "\n";
+            std::size_t j = 0;
+            for (auto item = crossPtrs.begin(bucket); item!= crossPtrs.end(bucket); ++item, ++j) {
+                std::cout << "        item[" << j << "]: " << item->first->name << "\n";
+            }
+        }
+        #endif
+    }
 
     //
     // dyn_cast
@@ -127,6 +147,7 @@ struct RTTI : virtual Object {
         auto *superSelf = static_cast<Class*>(this);
         this->rtti = Class::info();
         this->crossPtrs[this->rtti] = superSelf;
+        reportCrossPtrs();
     }
 };
 

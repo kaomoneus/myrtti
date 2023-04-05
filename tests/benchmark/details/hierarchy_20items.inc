@@ -30,6 +30,7 @@ INHERIT_ME_MULTI(
 );
 
 ROOT(DeepRoot)
+ROOT(DeepRoot2)
 INHERIT_ME(DeepRoot, Deep2);
 INHERIT_ME(Deep2, Deep3);
 INHERIT_ME(Deep3, Deep4);
@@ -49,3 +50,4 @@ INHERIT_ME(Deep16, Deep17);
 INHERIT_ME(Deep17, Deep18);
 INHERIT_ME(Deep18, Deep19);
 INHERIT_ME(Deep19, DeepFinal);
+// INHERIT_ME_MULTI((Deep19, Wide2, Wide3, Wide4, Wide5, Wide6, Wide7), DeepFinal);

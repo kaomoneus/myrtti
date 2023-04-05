@@ -1,0 +1,1176 @@
+CrossPtrs (Object):
+  Bucket count: 2
+    Bucket[0] size: 1
+        item[0]: Object
+    Bucket[1] size: 0
+CrossPtrs (DeepRoot):
+  Bucket count: 2
+    Bucket[0] size: 2
+        item[0]: DeepRoot
+        item[1]: Object
+    Bucket[1] size: 0
+CrossPtrs (Deep2):
+  Bucket count: 5
+    Bucket[0] size: 0
+    Bucket[1] size: 2
+        item[0]: Deep2
+        item[1]: Object
+    Bucket[2] size: 1
+        item[0]: DeepRoot
+    Bucket[3] size: 0
+    Bucket[4] size: 0
+CrossPtrs (Deep3):
+  Bucket count: 5
+    Bucket[0] size: 1
+        item[0]: Deep3
+    Bucket[1] size: 2
+        item[0]: Deep2
+        item[1]: Object
+    Bucket[2] size: 1
+        item[0]: DeepRoot
+    Bucket[3] size: 0
+    Bucket[4] size: 0
+CrossPtrs (Deep4):
+  Bucket count: 5
+    Bucket[0] size: 1
+        item[0]: Deep3
+    Bucket[1] size: 2
+        item[0]: Deep2
+        item[1]: Object
+    Bucket[2] size: 1
+        item[0]: DeepRoot
+    Bucket[3] size: 0
+    Bucket[4] size: 1
+        item[0]: Deep4
+CrossPtrs (Deep5):
+  Bucket count: 11
+    Bucket[0] size: 1
+        item[0]: Deep4
+    Bucket[1] size: 0
+    Bucket[2] size: 2
+        item[0]: Deep5
+        item[1]: Object
+    Bucket[3] size: 0
+    Bucket[4] size: 0
+    Bucket[5] size: 1
+        item[0]: DeepRoot
+    Bucket[6] size: 0
+    Bucket[7] size: 1
+        item[0]: Deep2
+    Bucket[8] size: 0
+    Bucket[9] size: 1
+        item[0]: Deep3
+    Bucket[10] size: 0
+CrossPtrs (Deep6):
+  Bucket count: 11
+    Bucket[0] size: 1
+        item[0]: Deep4
+    Bucket[1] size: 0
+    Bucket[2] size: 2
+        item[0]: Deep5
+        item[1]: Object
+    Bucket[3] size: 0
+    Bucket[4] size: 1
+        item[0]: Deep6
+    Bucket[5] size: 1
+        item[0]: DeepRoot
+    Bucket[6] size: 0
+    Bucket[7] size: 1
+        item[0]: Deep2
+    Bucket[8] size: 0
+    Bucket[9] size: 1
+        item[0]: Deep3
+    Bucket[10] size: 0
+CrossPtrs (Deep7):
+  Bucket count: 11
+    Bucket[0] size: 1
+        item[0]: Deep4
+    Bucket[1] size: 0
+    Bucket[2] size: 2
+        item[0]: Deep5
+        item[1]: Object
+    Bucket[3] size: 0
+    Bucket[4] size: 1
+        item[0]: Deep6
+    Bucket[5] size: 1
+        item[0]: DeepRoot
+    Bucket[6] size: 1
+        item[0]: Deep7
+    Bucket[7] size: 1
+        item[0]: Deep2
+    Bucket[8] size: 0
+    Bucket[9] size: 1
+        item[0]: Deep3
+    Bucket[10] size: 0
+CrossPtrs (Deep8):
+  Bucket count: 11
+    Bucket[0] size: 1
+        item[0]: Deep4
+    Bucket[1] size: 0
+    Bucket[2] size: 2
+        item[0]: Deep5
+        item[1]: Object
+    Bucket[3] size: 0
+    Bucket[4] size: 1
+        item[0]: Deep6
+    Bucket[5] size: 1
+        item[0]: DeepRoot
+    Bucket[6] size: 1
+        item[0]: Deep7
+    Bucket[7] size: 1
+        item[0]: Deep2
+    Bucket[8] size: 1
+        item[0]: Deep8
+    Bucket[9] size: 1
+        item[0]: Deep3
+    Bucket[10] size: 0
+CrossPtrs (Deep9):
+  Bucket count: 11
+    Bucket[0] size: 1
+        item[0]: Deep4
+    Bucket[1] size: 0
+    Bucket[2] size: 2
+        item[0]: Deep5
+        item[1]: Object
+    Bucket[3] size: 0
+    Bucket[4] size: 1
+        item[0]: Deep6
+    Bucket[5] size: 1
+        item[0]: DeepRoot
+    Bucket[6] size: 1
+        item[0]: Deep7
+    Bucket[7] size: 1
+        item[0]: Deep2
+    Bucket[8] size: 1
+        item[0]: Deep8
+    Bucket[9] size: 1
+        item[0]: Deep3
+    Bucket[10] size: 1
+        item[0]: Deep9
+CrossPtrs (Deep10):
+  Bucket count: 11
+    Bucket[0] size: 1
+        item[0]: Deep4
+    Bucket[1] size: 1
+        item[0]: Deep10
+    Bucket[2] size: 2
+        item[0]: Deep5
+        item[1]: Object
+    Bucket[3] size: 0
+    Bucket[4] size: 1
+        item[0]: Deep6
+    Bucket[5] size: 1
+        item[0]: DeepRoot
+    Bucket[6] size: 1
+        item[0]: Deep7
+    Bucket[7] size: 1
+        item[0]: Deep2
+    Bucket[8] size: 1
+        item[0]: Deep8
+    Bucket[9] size: 1
+        item[0]: Deep3
+    Bucket[10] size: 1
+        item[0]: Deep9
+CrossPtrs (Deep11):
+  Bucket count: 23
+    Bucket[0] size: 1
+        item[0]: Deep8
+    Bucket[1] size: 1
+        item[0]: Deep9
+    Bucket[2] size: 1
+        item[0]: Deep10
+    Bucket[3] size: 1
+        item[0]: Deep11
+    Bucket[4] size: 0
+    Bucket[5] size: 0
+    Bucket[6] size: 0
+    Bucket[7] size: 0
+    Bucket[8] size: 0
+    Bucket[9] size: 0
+    Bucket[10] size: 0
+    Bucket[11] size: 0
+    Bucket[12] size: 0
+    Bucket[13] size: 1
+        item[0]: Object
+    Bucket[14] size: 0
+    Bucket[15] size: 0
+    Bucket[16] size: 1
+        item[0]: DeepRoot
+    Bucket[17] size: 1
+        item[0]: Deep2
+    Bucket[18] size: 1
+        item[0]: Deep3
+    Bucket[19] size: 1
+        item[0]: Deep4
+    Bucket[20] size: 1
+        item[0]: Deep5
+    Bucket[21] size: 1
+        item[0]: Deep6
+    Bucket[22] size: 1
+        item[0]: Deep7
+CrossPtrs (Deep12):
+  Bucket count: 23
+    Bucket[0] size: 1
+        item[0]: Deep8
+    Bucket[1] size: 1
+        item[0]: Deep9
+    Bucket[2] size: 1
+        item[0]: Deep10
+    Bucket[3] size: 1
+        item[0]: Deep11
+    Bucket[4] size: 1
+        item[0]: Deep12
+    Bucket[5] size: 0
+    Bucket[6] size: 0
+    Bucket[7] size: 0
+    Bucket[8] size: 0
+    Bucket[9] size: 0
+    Bucket[10] size: 0
+    Bucket[11] size: 0
+    Bucket[12] size: 0
+    Bucket[13] size: 1
+        item[0]: Object
+    Bucket[14] size: 0
+    Bucket[15] size: 0
+    Bucket[16] size: 1
+        item[0]: DeepRoot
+    Bucket[17] size: 1
+        item[0]: Deep2
+    Bucket[18] size: 1
+        item[0]: Deep3
+    Bucket[19] size: 1
+        item[0]: Deep4
+    Bucket[20] size: 1
+        item[0]: Deep5
+    Bucket[21] size: 1
+        item[0]: Deep6
+    Bucket[22] size: 1
+        item[0]: Deep7
+CrossPtrs (Deep13):
+  Bucket count: 23
+    Bucket[0] size: 1
+        item[0]: Deep8
+    Bucket[1] size: 1
+        item[0]: Deep9
+    Bucket[2] size: 1
+        item[0]: Deep10
+    Bucket[3] size: 1
+        item[0]: Deep11
+    Bucket[4] size: 1
+        item[0]: Deep12
+    Bucket[5] size: 1
+        item[0]: Deep13
+    Bucket[6] size: 0
+    Bucket[7] size: 0
+    Bucket[8] size: 0
+    Bucket[9] size: 0
+    Bucket[10] size: 0
+    Bucket[11] size: 0
+    Bucket[12] size: 0
+    Bucket[13] size: 1
+        item[0]: Object
+    Bucket[14] size: 0
+    Bucket[15] size: 0
+    Bucket[16] size: 1
+        item[0]: DeepRoot
+    Bucket[17] size: 1
+        item[0]: Deep2
+    Bucket[18] size: 1
+        item[0]: Deep3
+    Bucket[19] size: 1
+        item[0]: Deep4
+    Bucket[20] size: 1
+        item[0]: Deep5
+    Bucket[21] size: 1
+        item[0]: Deep6
+    Bucket[22] size: 1
+        item[0]: Deep7
+CrossPtrs (Deep14):
+  Bucket count: 23
+    Bucket[0] size: 1
+        item[0]: Deep8
+    Bucket[1] size: 1
+        item[0]: Deep9
+    Bucket[2] size: 1
+        item[0]: Deep10
+    Bucket[3] size: 1
+        item[0]: Deep11
+    Bucket[4] size: 1
+        item[0]: Deep12
+    Bucket[5] size: 1
+        item[0]: Deep13
+    Bucket[6] size: 1
+        item[0]: Deep14
+    Bucket[7] size: 0
+    Bucket[8] size: 0
+    Bucket[9] size: 0
+    Bucket[10] size: 0
+    Bucket[11] size: 0
+    Bucket[12] size: 0
+    Bucket[13] size: 1
+        item[0]: Object
+    Bucket[14] size: 0
+    Bucket[15] size: 0
+    Bucket[16] size: 1
+        item[0]: DeepRoot
+    Bucket[17] size: 1
+        item[0]: Deep2
+    Bucket[18] size: 1
+        item[0]: Deep3
+    Bucket[19] size: 1
+        item[0]: Deep4
+    Bucket[20] size: 1
+        item[0]: Deep5
+    Bucket[21] size: 1
+        item[0]: Deep6
+    Bucket[22] size: 1
+        item[0]: Deep7
+CrossPtrs (Deep15):
+  Bucket count: 23
+    Bucket[0] size: 1
+        item[0]: Deep8
+    Bucket[1] size: 1
+        item[0]: Deep9
+    Bucket[2] size: 1
+        item[0]: Deep10
+    Bucket[3] size: 1
+        item[0]: Deep11
+    Bucket[4] size: 1
+        item[0]: Deep12
+    Bucket[5] size: 1
+        item[0]: Deep13
+    Bucket[6] size: 1
+        item[0]: Deep14
+    Bucket[7] size: 1
+        item[0]: Deep15
+    Bucket[8] size: 0
+    Bucket[9] size: 0
+    Bucket[10] size: 0
+    Bucket[11] size: 0
+    Bucket[12] size: 0
+    Bucket[13] size: 1
+        item[0]: Object
+    Bucket[14] size: 0
+    Bucket[15] size: 0
+    Bucket[16] size: 1
+        item[0]: DeepRoot
+    Bucket[17] size: 1
+        item[0]: Deep2
+    Bucket[18] size: 1
+        item[0]: Deep3
+    Bucket[19] size: 1
+        item[0]: Deep4
+    Bucket[20] size: 1
+        item[0]: Deep5
+    Bucket[21] size: 1
+        item[0]: Deep6
+    Bucket[22] size: 1
+        item[0]: Deep7
+CrossPtrs (Deep16):
+  Bucket count: 23
+    Bucket[0] size: 1
+        item[0]: Deep8
+    Bucket[1] size: 1
+        item[0]: Deep9
+    Bucket[2] size: 1
+        item[0]: Deep10
+    Bucket[3] size: 1
+        item[0]: Deep11
+    Bucket[4] size: 1
+        item[0]: Deep12
+    Bucket[5] size: 1
+        item[0]: Deep13
+    Bucket[6] size: 1
+        item[0]: Deep14
+    Bucket[7] size: 1
+        item[0]: Deep15
+    Bucket[8] size: 1
+        item[0]: Deep16
+    Bucket[9] size: 0
+    Bucket[10] size: 0
+    Bucket[11] size: 0
+    Bucket[12] size: 0
+    Bucket[13] size: 1
+        item[0]: Object
+    Bucket[14] size: 0
+    Bucket[15] size: 0
+    Bucket[16] size: 1
+        item[0]: DeepRoot
+    Bucket[17] size: 1
+        item[0]: Deep2
+    Bucket[18] size: 1
+        item[0]: Deep3
+    Bucket[19] size: 1
+        item[0]: Deep4
+    Bucket[20] size: 1
+        item[0]: Deep5
+    Bucket[21] size: 1
+        item[0]: Deep6
+    Bucket[22] size: 1
+        item[0]: Deep7
+CrossPtrs (Deep17):
+  Bucket count: 23
+    Bucket[0] size: 1
+        item[0]: Deep8
+    Bucket[1] size: 1
+        item[0]: Deep9
+    Bucket[2] size: 1
+        item[0]: Deep10
+    Bucket[3] size: 1
+        item[0]: Deep11
+    Bucket[4] size: 1
+        item[0]: Deep12
+    Bucket[5] size: 1
+        item[0]: Deep13
+    Bucket[6] size: 1
+        item[0]: Deep14
+    Bucket[7] size: 1
+        item[0]: Deep15
+    Bucket[8] size: 1
+        item[0]: Deep16
+    Bucket[9] size: 1
+        item[0]: Deep17
+    Bucket[10] size: 0
+    Bucket[11] size: 0
+    Bucket[12] size: 0
+    Bucket[13] size: 1
+        item[0]: Object
+    Bucket[14] size: 0
+    Bucket[15] size: 0
+    Bucket[16] size: 1
+        item[0]: DeepRoot
+    Bucket[17] size: 1
+        item[0]: Deep2
+    Bucket[18] size: 1
+        item[0]: Deep3
+    Bucket[19] size: 1
+        item[0]: Deep4
+    Bucket[20] size: 1
+        item[0]: Deep5
+    Bucket[21] size: 1
+        item[0]: Deep6
+    Bucket[22] size: 1
+        item[0]: Deep7
+CrossPtrs (Deep18):
+  Bucket count: 23
+    Bucket[0] size: 1
+        item[0]: Deep8
+    Bucket[1] size: 1
+        item[0]: Deep9
+    Bucket[2] size: 1
+        item[0]: Deep10
+    Bucket[3] size: 1
+        item[0]: Deep11
+    Bucket[4] size: 1
+        item[0]: Deep12
+    Bucket[5] size: 1
+        item[0]: Deep13
+    Bucket[6] size: 1
+        item[0]: Deep14
+    Bucket[7] size: 1
+        item[0]: Deep15
+    Bucket[8] size: 1
+        item[0]: Deep16
+    Bucket[9] size: 1
+        item[0]: Deep17
+    Bucket[10] size: 1
+        item[0]: Deep18
+    Bucket[11] size: 0
+    Bucket[12] size: 0
+    Bucket[13] size: 1
+        item[0]: Object
+    Bucket[14] size: 0
+    Bucket[15] size: 0
+    Bucket[16] size: 1
+        item[0]: DeepRoot
+    Bucket[17] size: 1
+        item[0]: Deep2
+    Bucket[18] size: 1
+        item[0]: Deep3
+    Bucket[19] size: 1
+        item[0]: Deep4
+    Bucket[20] size: 1
+        item[0]: Deep5
+    Bucket[21] size: 1
+        item[0]: Deep6
+    Bucket[22] size: 1
+        item[0]: Deep7
+CrossPtrs (Deep19):
+  Bucket count: 23
+    Bucket[0] size: 1
+        item[0]: Deep8
+    Bucket[1] size: 1
+        item[0]: Deep9
+    Bucket[2] size: 1
+        item[0]: Deep10
+    Bucket[3] size: 1
+        item[0]: Deep11
+    Bucket[4] size: 1
+        item[0]: Deep12
+    Bucket[5] size: 1
+        item[0]: Deep13
+    Bucket[6] size: 1
+        item[0]: Deep14
+    Bucket[7] size: 1
+        item[0]: Deep15
+    Bucket[8] size: 1
+        item[0]: Deep16
+    Bucket[9] size: 1
+        item[0]: Deep17
+    Bucket[10] size: 1
+        item[0]: Deep18
+    Bucket[11] size: 1
+        item[0]: Deep19
+    Bucket[12] size: 0
+    Bucket[13] size: 1
+        item[0]: Object
+    Bucket[14] size: 0
+    Bucket[15] size: 0
+    Bucket[16] size: 1
+        item[0]: DeepRoot
+    Bucket[17] size: 1
+        item[0]: Deep2
+    Bucket[18] size: 1
+        item[0]: Deep3
+    Bucket[19] size: 1
+        item[0]: Deep4
+    Bucket[20] size: 1
+        item[0]: Deep5
+    Bucket[21] size: 1
+        item[0]: Deep6
+    Bucket[22] size: 1
+        item[0]: Deep7
+CrossPtrs (DeepFinal):
+  Bucket count: 23
+    Bucket[0] size: 1
+        item[0]: Deep8
+    Bucket[1] size: 1
+        item[0]: Deep9
+    Bucket[2] size: 1
+        item[0]: Deep10
+    Bucket[3] size: 1
+        item[0]: Deep11
+    Bucket[4] size: 1
+        item[0]: Deep12
+    Bucket[5] size: 1
+        item[0]: Deep13
+    Bucket[6] size: 1
+        item[0]: Deep14
+    Bucket[7] size: 1
+        item[0]: Deep15
+    Bucket[8] size: 1
+        item[0]: Deep16
+    Bucket[9] size: 1
+        item[0]: Deep17
+    Bucket[10] size: 1
+        item[0]: Deep18
+    Bucket[11] size: 1
+        item[0]: Deep19
+    Bucket[12] size: 1
+        item[0]: DeepFinal
+    Bucket[13] size: 1
+        item[0]: Object
+    Bucket[14] size: 0
+    Bucket[15] size: 0
+    Bucket[16] size: 1
+        item[0]: DeepRoot
+    Bucket[17] size: 1
+        item[0]: Deep2
+    Bucket[18] size: 1
+        item[0]: Deep3
+    Bucket[19] size: 1
+        item[0]: Deep4
+    Bucket[20] size: 1
+        item[0]: Deep5
+    Bucket[21] size: 1
+        item[0]: Deep6
+    Bucket[22] size: 1
+        item[0]: Deep7
+CrossPtrs (Object):
+  Bucket count: 2
+    Bucket[0] size: 1
+        item[0]: Object
+    Bucket[1] size: 0
+CrossPtrs (WideRoot):
+  Bucket count: 2
+    Bucket[0] size: 2
+        item[0]: WideRoot
+        item[1]: Object
+    Bucket[1] size: 0
+CrossPtrs (Wide2):
+  Bucket count: 5
+    Bucket[0] size: 0
+    Bucket[1] size: 2
+        item[0]: Wide2
+        item[1]: Object
+    Bucket[2] size: 1
+        item[0]: WideRoot
+    Bucket[3] size: 0
+    Bucket[4] size: 0
+CrossPtrs (Wide3):
+  Bucket count: 5
+    Bucket[0] size: 1
+        item[0]: Wide3
+    Bucket[1] size: 2
+        item[0]: Wide2
+        item[1]: Object
+    Bucket[2] size: 1
+        item[0]: WideRoot
+    Bucket[3] size: 0
+    Bucket[4] size: 0
+CrossPtrs (Wide4):
+  Bucket count: 5
+    Bucket[0] size: 1
+        item[0]: Wide3
+    Bucket[1] size: 2
+        item[0]: Wide2
+        item[1]: Object
+    Bucket[2] size: 1
+        item[0]: WideRoot
+    Bucket[3] size: 0
+    Bucket[4] size: 1
+        item[0]: Wide4
+CrossPtrs (Wide5):
+  Bucket count: 11
+    Bucket[0] size: 0
+    Bucket[1] size: 1
+        item[0]: WideRoot
+    Bucket[2] size: 1
+        item[0]: Object
+    Bucket[3] size: 1
+        item[0]: Wide2
+    Bucket[4] size: 0
+    Bucket[5] size: 1
+        item[0]: Wide3
+    Bucket[6] size: 0
+    Bucket[7] size: 1
+        item[0]: Wide4
+    Bucket[8] size: 0
+    Bucket[9] size: 1
+        item[0]: Wide5
+    Bucket[10] size: 0
+CrossPtrs (Wide6):
+  Bucket count: 11
+    Bucket[0] size: 1
+        item[0]: Wide6
+    Bucket[1] size: 1
+        item[0]: WideRoot
+    Bucket[2] size: 1
+        item[0]: Object
+    Bucket[3] size: 1
+        item[0]: Wide2
+    Bucket[4] size: 0
+    Bucket[5] size: 1
+        item[0]: Wide3
+    Bucket[6] size: 0
+    Bucket[7] size: 1
+        item[0]: Wide4
+    Bucket[8] size: 0
+    Bucket[9] size: 1
+        item[0]: Wide5
+    Bucket[10] size: 0
+CrossPtrs (Wide7):
+  Bucket count: 11
+    Bucket[0] size: 1
+        item[0]: Wide6
+    Bucket[1] size: 1
+        item[0]: WideRoot
+    Bucket[2] size: 2
+        item[0]: Wide7
+        item[1]: Object
+    Bucket[3] size: 1
+        item[0]: Wide2
+    Bucket[4] size: 0
+    Bucket[5] size: 1
+        item[0]: Wide3
+    Bucket[6] size: 0
+    Bucket[7] size: 1
+        item[0]: Wide4
+    Bucket[8] size: 0
+    Bucket[9] size: 1
+        item[0]: Wide5
+    Bucket[10] size: 0
+CrossPtrs (Wide8):
+  Bucket count: 11
+    Bucket[0] size: 1
+        item[0]: Wide6
+    Bucket[1] size: 1
+        item[0]: WideRoot
+    Bucket[2] size: 2
+        item[0]: Wide7
+        item[1]: Object
+    Bucket[3] size: 1
+        item[0]: Wide2
+    Bucket[4] size: 1
+        item[0]: Wide8
+    Bucket[5] size: 1
+        item[0]: Wide3
+    Bucket[6] size: 0
+    Bucket[7] size: 1
+        item[0]: Wide4
+    Bucket[8] size: 0
+    Bucket[9] size: 1
+        item[0]: Wide5
+    Bucket[10] size: 0
+CrossPtrs (Wide9):
+  Bucket count: 11
+    Bucket[0] size: 1
+        item[0]: Wide6
+    Bucket[1] size: 1
+        item[0]: WideRoot
+    Bucket[2] size: 2
+        item[0]: Wide7
+        item[1]: Object
+    Bucket[3] size: 1
+        item[0]: Wide2
+    Bucket[4] size: 1
+        item[0]: Wide8
+    Bucket[5] size: 1
+        item[0]: Wide3
+    Bucket[6] size: 1
+        item[0]: Wide9
+    Bucket[7] size: 1
+        item[0]: Wide4
+    Bucket[8] size: 0
+    Bucket[9] size: 1
+        item[0]: Wide5
+    Bucket[10] size: 0
+CrossPtrs (Wide10):
+  Bucket count: 11
+    Bucket[0] size: 1
+        item[0]: Wide6
+    Bucket[1] size: 1
+        item[0]: WideRoot
+    Bucket[2] size: 2
+        item[0]: Wide7
+        item[1]: Object
+    Bucket[3] size: 1
+        item[0]: Wide2
+    Bucket[4] size: 1
+        item[0]: Wide8
+    Bucket[5] size: 1
+        item[0]: Wide3
+    Bucket[6] size: 1
+        item[0]: Wide9
+    Bucket[7] size: 1
+        item[0]: Wide4
+    Bucket[8] size: 1
+        item[0]: Wide10
+    Bucket[9] size: 1
+        item[0]: Wide5
+    Bucket[10] size: 0
+CrossPtrs (Wide11):
+  Bucket count: 23
+    Bucket[0] size: 1
+        item[0]: Wide11
+    Bucket[1] size: 0
+    Bucket[2] size: 0
+    Bucket[3] size: 0
+    Bucket[4] size: 0
+    Bucket[5] size: 0
+    Bucket[6] size: 0
+    Bucket[7] size: 0
+    Bucket[8] size: 0
+    Bucket[9] size: 0
+    Bucket[10] size: 0
+    Bucket[11] size: 0
+    Bucket[12] size: 0
+    Bucket[13] size: 2
+        item[0]: Object
+        item[1]: WideRoot
+    Bucket[14] size: 1
+        item[0]: Wide2
+    Bucket[15] size: 1
+        item[0]: Wide3
+    Bucket[16] size: 1
+        item[0]: Wide4
+    Bucket[17] size: 1
+        item[0]: Wide5
+    Bucket[18] size: 1
+        item[0]: Wide6
+    Bucket[19] size: 1
+        item[0]: Wide7
+    Bucket[20] size: 1
+        item[0]: Wide8
+    Bucket[21] size: 1
+        item[0]: Wide9
+    Bucket[22] size: 1
+        item[0]: Wide10
+CrossPtrs (Wide12):
+  Bucket count: 23
+    Bucket[0] size: 1
+        item[0]: Wide11
+    Bucket[1] size: 1
+        item[0]: Wide12
+    Bucket[2] size: 0
+    Bucket[3] size: 0
+    Bucket[4] size: 0
+    Bucket[5] size: 0
+    Bucket[6] size: 0
+    Bucket[7] size: 0
+    Bucket[8] size: 0
+    Bucket[9] size: 0
+    Bucket[10] size: 0
+    Bucket[11] size: 0
+    Bucket[12] size: 0
+    Bucket[13] size: 2
+        item[0]: Object
+        item[1]: WideRoot
+    Bucket[14] size: 1
+        item[0]: Wide2
+    Bucket[15] size: 1
+        item[0]: Wide3
+    Bucket[16] size: 1
+        item[0]: Wide4
+    Bucket[17] size: 1
+        item[0]: Wide5
+    Bucket[18] size: 1
+        item[0]: Wide6
+    Bucket[19] size: 1
+        item[0]: Wide7
+    Bucket[20] size: 1
+        item[0]: Wide8
+    Bucket[21] size: 1
+        item[0]: Wide9
+    Bucket[22] size: 1
+        item[0]: Wide10
+CrossPtrs (Wide13):
+  Bucket count: 23
+    Bucket[0] size: 1
+        item[0]: Wide11
+    Bucket[1] size: 1
+        item[0]: Wide12
+    Bucket[2] size: 1
+        item[0]: Wide13
+    Bucket[3] size: 0
+    Bucket[4] size: 0
+    Bucket[5] size: 0
+    Bucket[6] size: 0
+    Bucket[7] size: 0
+    Bucket[8] size: 0
+    Bucket[9] size: 0
+    Bucket[10] size: 0
+    Bucket[11] size: 0
+    Bucket[12] size: 0
+    Bucket[13] size: 2
+        item[0]: Object
+        item[1]: WideRoot
+    Bucket[14] size: 1
+        item[0]: Wide2
+    Bucket[15] size: 1
+        item[0]: Wide3
+    Bucket[16] size: 1
+        item[0]: Wide4
+    Bucket[17] size: 1
+        item[0]: Wide5
+    Bucket[18] size: 1
+        item[0]: Wide6
+    Bucket[19] size: 1
+        item[0]: Wide7
+    Bucket[20] size: 1
+        item[0]: Wide8
+    Bucket[21] size: 1
+        item[0]: Wide9
+    Bucket[22] size: 1
+        item[0]: Wide10
+CrossPtrs (Wide14):
+  Bucket count: 23
+    Bucket[0] size: 1
+        item[0]: Wide11
+    Bucket[1] size: 1
+        item[0]: Wide12
+    Bucket[2] size: 1
+        item[0]: Wide13
+    Bucket[3] size: 1
+        item[0]: Wide14
+    Bucket[4] size: 0
+    Bucket[5] size: 0
+    Bucket[6] size: 0
+    Bucket[7] size: 0
+    Bucket[8] size: 0
+    Bucket[9] size: 0
+    Bucket[10] size: 0
+    Bucket[11] size: 0
+    Bucket[12] size: 0
+    Bucket[13] size: 2
+        item[0]: Object
+        item[1]: WideRoot
+    Bucket[14] size: 1
+        item[0]: Wide2
+    Bucket[15] size: 1
+        item[0]: Wide3
+    Bucket[16] size: 1
+        item[0]: Wide4
+    Bucket[17] size: 1
+        item[0]: Wide5
+    Bucket[18] size: 1
+        item[0]: Wide6
+    Bucket[19] size: 1
+        item[0]: Wide7
+    Bucket[20] size: 1
+        item[0]: Wide8
+    Bucket[21] size: 1
+        item[0]: Wide9
+    Bucket[22] size: 1
+        item[0]: Wide10
+CrossPtrs (Wide15):
+  Bucket count: 23
+    Bucket[0] size: 1
+        item[0]: Wide11
+    Bucket[1] size: 1
+        item[0]: Wide12
+    Bucket[2] size: 1
+        item[0]: Wide13
+    Bucket[3] size: 1
+        item[0]: Wide14
+    Bucket[4] size: 1
+        item[0]: Wide15
+    Bucket[5] size: 0
+    Bucket[6] size: 0
+    Bucket[7] size: 0
+    Bucket[8] size: 0
+    Bucket[9] size: 0
+    Bucket[10] size: 0
+    Bucket[11] size: 0
+    Bucket[12] size: 0
+    Bucket[13] size: 2
+        item[0]: Object
+        item[1]: WideRoot
+    Bucket[14] size: 1
+        item[0]: Wide2
+    Bucket[15] size: 1
+        item[0]: Wide3
+    Bucket[16] size: 1
+        item[0]: Wide4
+    Bucket[17] size: 1
+        item[0]: Wide5
+    Bucket[18] size: 1
+        item[0]: Wide6
+    Bucket[19] size: 1
+        item[0]: Wide7
+    Bucket[20] size: 1
+        item[0]: Wide8
+    Bucket[21] size: 1
+        item[0]: Wide9
+    Bucket[22] size: 1
+        item[0]: Wide10
+CrossPtrs (Wide16):
+  Bucket count: 23
+    Bucket[0] size: 1
+        item[0]: Wide11
+    Bucket[1] size: 1
+        item[0]: Wide12
+    Bucket[2] size: 1
+        item[0]: Wide13
+    Bucket[3] size: 1
+        item[0]: Wide14
+    Bucket[4] size: 1
+        item[0]: Wide15
+    Bucket[5] size: 1
+        item[0]: Wide16
+    Bucket[6] size: 0
+    Bucket[7] size: 0
+    Bucket[8] size: 0
+    Bucket[9] size: 0
+    Bucket[10] size: 0
+    Bucket[11] size: 0
+    Bucket[12] size: 0
+    Bucket[13] size: 2
+        item[0]: Object
+        item[1]: WideRoot
+    Bucket[14] size: 1
+        item[0]: Wide2
+    Bucket[15] size: 1
+        item[0]: Wide3
+    Bucket[16] size: 1
+        item[0]: Wide4
+    Bucket[17] size: 1
+        item[0]: Wide5
+    Bucket[18] size: 1
+        item[0]: Wide6
+    Bucket[19] size: 1
+        item[0]: Wide7
+    Bucket[20] size: 1
+        item[0]: Wide8
+    Bucket[21] size: 1
+        item[0]: Wide9
+    Bucket[22] size: 1
+        item[0]: Wide10
+CrossPtrs (Wide17):
+  Bucket count: 23
+    Bucket[0] size: 1
+        item[0]: Wide11
+    Bucket[1] size: 1
+        item[0]: Wide12
+    Bucket[2] size: 1
+        item[0]: Wide13
+    Bucket[3] size: 1
+        item[0]: Wide14
+    Bucket[4] size: 1
+        item[0]: Wide15
+    Bucket[5] size: 1
+        item[0]: Wide16
+    Bucket[6] size: 1
+        item[0]: Wide17
+    Bucket[7] size: 0
+    Bucket[8] size: 0
+    Bucket[9] size: 0
+    Bucket[10] size: 0
+    Bucket[11] size: 0
+    Bucket[12] size: 0
+    Bucket[13] size: 2
+        item[0]: Object
+        item[1]: WideRoot
+    Bucket[14] size: 1
+        item[0]: Wide2
+    Bucket[15] size: 1
+        item[0]: Wide3
+    Bucket[16] size: 1
+        item[0]: Wide4
+    Bucket[17] size: 1
+        item[0]: Wide5
+    Bucket[18] size: 1
+        item[0]: Wide6
+    Bucket[19] size: 1
+        item[0]: Wide7
+    Bucket[20] size: 1
+        item[0]: Wide8
+    Bucket[21] size: 1
+        item[0]: Wide9
+    Bucket[22] size: 1
+        item[0]: Wide10
+CrossPtrs (Wide18):
+  Bucket count: 23
+    Bucket[0] size: 1
+        item[0]: Wide11
+    Bucket[1] size: 1
+        item[0]: Wide12
+    Bucket[2] size: 1
+        item[0]: Wide13
+    Bucket[3] size: 1
+        item[0]: Wide14
+    Bucket[4] size: 1
+        item[0]: Wide15
+    Bucket[5] size: 1
+        item[0]: Wide16
+    Bucket[6] size: 1
+        item[0]: Wide17
+    Bucket[7] size: 1
+        item[0]: Wide18
+    Bucket[8] size: 0
+    Bucket[9] size: 0
+    Bucket[10] size: 0
+    Bucket[11] size: 0
+    Bucket[12] size: 0
+    Bucket[13] size: 2
+        item[0]: Object
+        item[1]: WideRoot
+    Bucket[14] size: 1
+        item[0]: Wide2
+    Bucket[15] size: 1
+        item[0]: Wide3
+    Bucket[16] size: 1
+        item[0]: Wide4
+    Bucket[17] size: 1
+        item[0]: Wide5
+    Bucket[18] size: 1
+        item[0]: Wide6
+    Bucket[19] size: 1
+        item[0]: Wide7
+    Bucket[20] size: 1
+        item[0]: Wide8
+    Bucket[21] size: 1
+        item[0]: Wide9
+    Bucket[22] size: 1
+        item[0]: Wide10
+CrossPtrs (Wide19):
+  Bucket count: 23
+    Bucket[0] size: 1
+        item[0]: Wide11
+    Bucket[1] size: 1
+        item[0]: Wide12
+    Bucket[2] size: 1
+        item[0]: Wide13
+    Bucket[3] size: 1
+        item[0]: Wide14
+    Bucket[4] size: 1
+        item[0]: Wide15
+    Bucket[5] size: 1
+        item[0]: Wide16
+    Bucket[6] size: 1
+        item[0]: Wide17
+    Bucket[7] size: 1
+        item[0]: Wide18
+    Bucket[8] size: 1
+        item[0]: Wide19
+    Bucket[9] size: 0
+    Bucket[10] size: 0
+    Bucket[11] size: 0
+    Bucket[12] size: 0
+    Bucket[13] size: 2
+        item[0]: Object
+        item[1]: WideRoot
+    Bucket[14] size: 1
+        item[0]: Wide2
+    Bucket[15] size: 1
+        item[0]: Wide3
+    Bucket[16] size: 1
+        item[0]: Wide4
+    Bucket[17] size: 1
+        item[0]: Wide5
+    Bucket[18] size: 1
+        item[0]: Wide6
+    Bucket[19] size: 1
+        item[0]: Wide7
+    Bucket[20] size: 1
+        item[0]: Wide8
+    Bucket[21] size: 1
+        item[0]: Wide9
+    Bucket[22] size: 1
+        item[0]: Wide10
+CrossPtrs (WideFinal):
+  Bucket count: 23
+    Bucket[0] size: 1
+        item[0]: Wide11
+    Bucket[1] size: 1
+        item[0]: Wide12
+    Bucket[2] size: 1
+        item[0]: Wide13
+    Bucket[3] size: 1
+        item[0]: Wide14
+    Bucket[4] size: 1
+        item[0]: Wide15
+    Bucket[5] size: 1
+        item[0]: Wide16
+    Bucket[6] size: 1
+        item[0]: Wide17
+    Bucket[7] size: 1
+        item[0]: Wide18
+    Bucket[8] size: 1
+        item[0]: Wide19
+    Bucket[9] size: 1
+        item[0]: WideFinal
+    Bucket[10] size: 0
+    Bucket[11] size: 0
+    Bucket[12] size: 0
+    Bucket[13] size: 2
+        item[0]: Object
+        item[1]: WideRoot
+    Bucket[14] size: 1
+        item[0]: Wide2
+    Bucket[15] size: 1
+        item[0]: Wide3
+    Bucket[16] size: 1
+        item[0]: Wide4
+    Bucket[17] size: 1
+        item[0]: Wide5
+    Bucket[18] size: 1
+        item[0]: Wide6
+    Bucket[19] size: 1
+        item[0]: Wide7
+    Bucket[20] size: 1
+        item[0]: Wide8
+    Bucket[21] size: 1
+        item[0]: Wide9
+    Bucket[22] size: 1
+        item[0]: Wide10
