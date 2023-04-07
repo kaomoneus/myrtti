@@ -53,7 +53,7 @@ struct Object {
     template<class T, std::enable_if_t<!std::is_pointer<T>::value, bool> = true>
     T& cast() {
         // TODO: Validate that T::info() takes longer time for polymorphic types.
-        auto found = this->crossPtrs.find(T::info());
+        auto found = this->crossPtrs.find(T::class_id);
         if (/*[[likely]]*/ found != end(this->crossPtrs)) {
             return *static_cast<T*>(found->second);
         }
@@ -64,7 +64,7 @@ struct Object {
     template<class T, std::enable_if_t<std::is_pointer<T>::value, bool> = true>
     T cast() {
         using _T = std::remove_pointer_t<T>;
-        auto found = this->crossPtrs.find(_T::info());
+        auto found = this->crossPtrs.find(_T::class_id);
         if (/*[[likely]]*/ found != end(this->crossPtrs)) {
             return static_cast<T>(found->second);
         }
@@ -73,7 +73,7 @@ struct Object {
 
     template<class T, std::enable_if_t<!std::is_pointer<T>::value, bool> = true>
     const T& cast() const {
-        auto found = this->crossPtrs.find(T::info());
+        auto found = this->crossPtrs.find(T::class_id);
         if (/*[[likely]]*/ found != end(this->crossPtrs)) {
             return *static_cast<T*>(found->second);
         }
@@ -84,7 +84,7 @@ struct Object {
     template<class T, std::enable_if_t<std::is_pointer<T>::value, bool> = true>
     const T cast() const {
         using _T = std::remove_pointer_t<T>;
-        auto found = this->crossPtrs.find(_T::info());
+        auto found = this->crossPtrs.find(_T::class_id);
         if (found != end(this->crossPtrs))
             return static_cast<T>(found->second);
         return nullptr;
@@ -94,9 +94,8 @@ protected:
     template<class T>
     friend class RTTI;
 
-    // TODO: randomize hashing routine.
     // Note: rtti field should be initialized before crossPtrs.
-    std::unordered_map<const ClassInfo*, void*> crossPtrs{{rtti, this}};
+    std::unordered_map<class_id_t, void*> crossPtrs{{class_id, this}};
 };
 
 // Problems:
@@ -117,7 +116,7 @@ struct RTTI : virtual Object {
     RTTI() {
         auto *superSelf = static_cast<Class*>(this);
         this->rtti = Class::info();
-        this->crossPtrs[this->rtti] = superSelf;
+        this->crossPtrs[Class::class_id] = superSelf;
         reportCrossPtrs();
     }
 };
