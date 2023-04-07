@@ -39,11 +39,10 @@ namespace myrtti
         void init(std::function<bool(const Cls&)>&& ...visitors) {
             (
                 [&] {
-
                     std::cout << "VISITOR: Registered handler for "
                               << Cls::info() << "\n";
                     visitorsMap.emplace(
-                        Cls::info(),
+                        Cls::class_id,
                         [=] (const Object& b) {
                             const Cls& bb = b.cast<Cls>();
                             return visitors(bb);
@@ -58,11 +57,11 @@ namespace myrtti
                   << b.rtti->name << "\n";
 
         bool neverVisited = Hierarchy::instance()->destruct(
-            b.rtti,
+            b.rtti->getId(),
             [&] (const ClassInfo* cls) {
                 std::cout << std::hex
                 << "VISITOR:   Visiting class " << cls << "\n";
-                auto found = visitorsMap.find(cls);
+                auto found = visitorsMap.find(cls->getId());
 
                 if (found != end(visitorsMap)) {
                     std::cout << "VISITOR:     found handler...\n";
@@ -82,7 +81,7 @@ namespace myrtti
 
     private:
         std::unordered_map<
-            const ClassInfo*,
+            class_id_t,
             std::function<bool(const Object& b)>
         > visitorsMap;
     };
@@ -120,19 +119,20 @@ namespace myrtti
 
         explicit VisitorStatic(
             const std::unordered_map<
-                const ClassInfo*, std::function<bool()>
+                class_id_t, std::function<bool()>
             >& handlers
         ) : visitorsMap(handlers) {}
 
-        bool visit(const ClassInfo* b) {
+        template<class ClassT>
+        bool visit() {
             std::cout << "STATIC VISITOR: Unwinding visit for class " << b << "\n";
 
             bool neverVisited = Hierarchy::instance()->destruct(
-                b,
+                ClassT::class_id,
                 [&] (const ClassInfo* cls) {
                     std::cout << std::hex
                     << "STATIC VISITOR:   Visiting class " << cls << "\n";
-                    auto found = visitorsMap.find(cls);
+                    auto found = visitorsMap.find(cls->getId());
 
                     if (found != end(visitorsMap)) {
                         std::cout << "STATIC VISITOR:     found handler...\n";
@@ -151,6 +151,6 @@ namespace myrtti
         }
 
     private:
-        std::unordered_map<const ClassInfo*, std::function<bool()>> visitorsMap;
+        std::unordered_map<class_id_t, std::function<bool()>> visitorsMap;
     };
 } // namespace myrtti

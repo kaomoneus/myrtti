@@ -33,8 +33,14 @@ struct Hierarchy {
         //     throw std::runtime_error(strm.str());
         // }
 
-        dag.add(cls, parents);
+        constexpr std::size_t numParents = parents.size();
+        std::array<class_id_t, numParents> parentIds;
+        for (std::size_t i = 0; i!=numParents;++i) {
+            parentIds[i] = parents[i]->getId();
+        }
 
+        dag.add(cls, parents);
+        idToClass[cls->getId()] = cls;
 
         // Get ancestors cache for O(0) 'isParent' implementation.
         // tradeof: RAM consumption N^2 (N amount of classes)
@@ -55,10 +61,10 @@ struct Hierarchy {
     ///   the latter applicable for <instance, another class> pair,
     ///   whilst the former applicable for pure <ClassInfo, ClassInfo> pair.
     ///
-    /// @param child child class
-    /// @param parent parent class
+    /// @param child child class ID
+    /// @param parent parent class ID
     /// @return true if relation is confirmed
-    bool isParent(const ClassInfo *child, const ClassInfo *parent) {
+    bool isParent(class_id_t child, class_id_t parent) {
         return ancestorsCache.count(child)
             && ancestorsCache[child].count(parent);
     }
@@ -72,8 +78,14 @@ struct Hierarchy {
     /// @param onNode node callback.
     /// @return true if search completed successfully and 'false' if it
     ///         was interrupted by callback.
-    bool contruct(const ClassInfo *cls, const node_callback_t& onNode) {
-        return dag.dfs(cls, /*onBeforeNode*/ nullptr, /*onAfterNode*/onNode);
+    bool construct(class_id_t clsid, const node_callback_t& onNode) {
+        return dag.dfs(clsid,
+            /*onBeforeNode*/ nullptr,
+            /*onAfterNode*/ [&](class_id_t traversedClsId) {
+                const ClassInfo* traversedCls = idToClass[traversedClsId];
+                return onNode(traversedCls);
+            }
+        );
     }
 
     /// @brief Invokes custom callback follwing classes as it would call
@@ -82,8 +94,13 @@ struct Hierarchy {
     /// @param onNode node callback.
     /// @return true if search completed successfully and 'false' if it
     ///         was interrupted by callback.
-    bool destruct(const ClassInfo* cls, const node_callback_t& onNode) {
-        return dag.dfs(cls, /*onBeforeNode*/ onNode);
+    bool destruct(class_id_t clsid, const node_callback_t& onNode) {
+        return dag.dfs(clsid,
+            /*onBeforeNode*/ [&](class_id_t traversedClsId) {
+                const ClassInfo* traversedCls = idToClass[traversedClsId];
+                return onNode(traversedCls);
+            }
+        );
     }
 
     Hierarchy& operator=(const Hierarchy& src) = delete;
@@ -103,7 +120,7 @@ private:
     // optimizations.
     // As an alternative we can use shared_ptr, but it might be slower.
     // std::shared_ptr<DAG<const ClassInfo*>> dag;
-    DAG<const ClassInfo*> dag;
+    DAG<class_id_t> dag;
 
     // FIXME: Unable to use ClassInfo complete type due to cycled deps, see
     // previous comment to move some code into .cpp and then
@@ -112,8 +129,11 @@ private:
 
 
     // TODO: consider using class_id_t instead.
-    using classes_set_t = std::unordered_set<const ClassInfo*>;
-    std::unordered_map<const ClassInfo*, classes_set_t> ancestorsCache;
+    using classes_map_t = std::unordered_map<class_id_t, const ClassInfo*>;
+    using classes_set_t = std::unordered_set<class_id_t>;
+
+    classes_map_t idToClass;
+    std::unordered_map<class_id_t, classes_set_t> ancestorsCache;
 };
 
 } // namespace myrtti

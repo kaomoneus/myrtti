@@ -63,28 +63,28 @@ int main() {
 
     VisitorStatic staticVisitor({
         {
-            Exception::info(), [] {
+            Exception::class_id, [] {
                 std::cout << "STATIC: Exception\n";
                 return true;
             }
         },
         {
-            ExceptionErrorOne::info(), [] {
+            ExceptionErrorOne::class_id, [] {
                 std::cout << "STATIC: ExceptionOne\n";
                 return true;
             }
         },
         {
-            ExceptionErrorTwo::info(), [] {
+            ExceptionErrorTwo::class_id, [] {
                 std::cout << "STATIC: ExceptionTwo\n";
                 return true;
             }
         }
     });
 
-    staticVisitor.visit(ExceptionErrorOne::info());
-    staticVisitor.visit(ExceptionErrorTwo::info());
-    staticVisitor.visit(ExceptionErrorThree::info());
+    staticVisitor.visit<ExceptionErrorOne>();
+    staticVisitor.visit<ExceptionErrorTwo>();
+    staticVisitor.visit<ExceptionErrorThree>();
 
     return 0;
 }

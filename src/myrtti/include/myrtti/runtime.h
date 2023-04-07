@@ -2,6 +2,7 @@
 #define MYRTTI_RUNTIME_H
 
 #include "myrtti/class_id.h"
+#include "myrtti/class_info.h"
 #include "myrtti/hierarchy.h"
 
 #include <array>
