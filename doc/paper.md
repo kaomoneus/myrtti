@@ -376,7 +376,7 @@ The reason is that we still didn't check all the consequencies if we enable virt
 As we said, for heavy `RTTI_STRUCT_xxx` macros are possible for *structs* only.
 
 #### Anything else?
-Who knows? Better to keep this part vacant then absent at all.
+Who knows? Better to keep this part vacant than absent at all.
 
 ### Benchmarks
 We didn't aim to achieve super performance but rather reach functionality. And yet we made few synthetics benchmarks.
@@ -415,7 +415,7 @@ Here are few notes.
 We should be very accurate with conclusions when we beat some legacy well-optimized thing.
 But if its true.. well then "YAY!" those would be a great news!
 
-But let's others to confirm this fact. Optimized results might be context dependent. For example,
+But let others to confirm this fact. Optimized results might be context dependent. For example,
 it might be merged with some user's code, or inlined into some user's function. And it might affect
 final result quite dramatically.
 
