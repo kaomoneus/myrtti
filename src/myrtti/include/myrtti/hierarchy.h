@@ -3,6 +3,8 @@
 
 #include <functional>
 #include <memory>
+#include <sstream>
+#include <stdexcept>
 #include <unordered_map>
 #include <vector>
 
@@ -20,39 +22,32 @@ struct Hierarchy {
     /// @param cls class to be added
     /// @param parents parents list
     template<typename ArrayT>
-    void add(const ClassInfo *cls, const ArrayT& parents) {
+    void add(const ClassInfo *cls, const ArrayT& parentIds) {
 
-        // TODO: first move this into .cpp, then add class_id validation.
-        //
-        // auto [it, added] = added_clids.insert(cls->getId());
-        // if (!added) {
-        //     std::ostringstream strm;
-        //     strm << "Class " << cls
-        //          << " has colliding id. Unable to maintain hierarchy"
-        //          << " consider changing CRC initial state."
-        //     throw std::runtime_error(strm.str());
-        // }
+        auto clsId = resolveClassInfoId(cls);
 
-        constexpr std::size_t numParents = parents.size();
-        std::array<class_id_t, numParents> parentIds;
-        for (std::size_t i = 0; i!=numParents;++i) {
-            parentIds[i] = parents[i]->getId();
+        dag.add(clsId, parentIds);
+
+        auto [it, added] = idToClass.emplace(clsId, cls);
+        if (!added) {
+            std::ostringstream strm;
+            strm << "Class " << cls
+                 << " has colliding id. Unable to maintain hierarchy"
+                 << " consider changing class name or CRC64 initial state.";
+            throw std::runtime_error(strm.str());
         }
-
-        dag.add(cls, parents);
-        idToClass[cls->getId()] = cls;
 
         // Get ancestors cache for O(0) 'isParent' implementation.
         // tradeof: RAM consumption N^2 (N amount of classes)
-        if (!parents.empty()) {
-            auto [it, _] = ancestorsCache.emplace(cls, classes_set_t());
+        if (!parentIds.empty()) {
+            auto [it, _] = ancestorsCache.emplace(clsId, classes_set_t());
             auto &ancestors = it->second;
 
-            for (auto p : parents) {
+            for (auto p : parentIds) {
                 auto &pAncestors = ancestorsCache[p];
                 ancestors.insert(begin(pAncestors), end(pAncestors));
             }
-            ancestors.insert(begin(parents), end(parents));
+            ancestors.insert(begin(parentIds), end(parentIds));
         }
     }
 
@@ -111,6 +106,18 @@ struct Hierarchy {
     }
 
 private:
+
+    /// @brief Picks classInfo->getId(), where classInfo is a pointer to
+    /// incomplete class.
+    ///
+    /// This is a helper method to prevent circular dependency
+    /// between ClassInfo and Hierarchy. In this header we only can use
+    /// incomplete ClassInfo. And in order to call one of its methods
+    /// we should move it to .cpp part.
+    /// @param classInfo - ClassInfo pointer
+    /// @return class_id for given classInfo.
+    static class_id_t resolveClassInfoId(const ClassInfo* classInfo);
+
     // TODO: in order to reduce compile time impact we could
     // move out direct DAG template usage into .cpp file.
     // We can do it through HierarchyImpl which will be defined
@@ -122,13 +129,6 @@ private:
     // std::shared_ptr<DAG<const ClassInfo*>> dag;
     DAG<class_id_t> dag;
 
-    // FIXME: Unable to use ClassInfo complete type due to cycled deps, see
-    // previous comment to move some code into .cpp and then
-    // apply code below:
-    // std::unordered_set<class_id_t, class_id_t::hash> added_clids;
-
-
-    // TODO: consider using class_id_t instead.
     using classes_map_t = std::unordered_map<class_id_t, const ClassInfo*>;
     using classes_set_t = std::unordered_set<class_id_t>;
 

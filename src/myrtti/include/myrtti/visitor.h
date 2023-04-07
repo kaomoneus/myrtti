@@ -125,7 +125,7 @@ namespace myrtti
 
         template<class ClassT>
         bool visit() {
-            std::cout << "STATIC VISITOR: Unwinding visit for class " << b << "\n";
+            std::cout << "STATIC VISITOR: Unwinding visit for class " << ClassT::info() << "\n";
 
             bool neverVisited = Hierarchy::instance()->destruct(
                 ClassT::class_id,

@@ -3,7 +3,6 @@
 
 #include "myrtti/class_id.h"
 #include "myrtti/class_info.h"
-#include "myrtti/hierarchy.h"
 
 #include <array>
 #include <cstdlib>
@@ -14,35 +13,6 @@
 #include <type_traits>
 
 namespace myrtti {
-
-struct ClassInfo {
-    const char* name;
-
-    // this is a custom make_array implementation
-    template<class ...Parents>
-    static std::array<const ClassInfo*, sizeof...(Parents)>
-    mk_class_info_array() {
-        return {Parents::info()...};
-    }
-
-    ClassInfo(const char* name, class_id_t classId) : name(name), id(classId) {
-        Hierarchy::instance()->add(this, std::array<const ClassInfo*, 0>());
-    }
-
-    template<typename ArrayT>
-    ClassInfo(const char* name, class_id_t classId, const ArrayT& parents)
-    : name(name), id(classId) {
-        // std::cout << "Registered class: " << name << "\n";
-        // for (const ClassInfo* p : parents) {
-        //     std::cout << "    parent: " << p->name << "\n";
-        // }
-        Hierarchy::instance()->add(this, parents);
-    }
-
-    class_id_t getId() const { return id; }
-private:
-    class_id_t id;
-};
 
 struct Object {
     virtual ~Object() = default;
@@ -162,12 +132,19 @@ using strip_type = std::remove_pointer_t<
 template<class B, class T>
 using is_base_of = std::is_base_of<strip_type<B>, strip_type<T>>;
 
+// this is a custom make_array implementation
+template<class ...Parents>
+static std::array<class_id_t, sizeof...(Parents)>
+mk_class_ids() {
+    return {Parents::class_id...};
+}
+
 // We use constexpr crc64 implementation, written by Sam Belliveau
 // https://gist.github.com/Sam-Belliveau/72ba4a8710324ce7a1ac1789d64ec831
 #define DEFINE_RTTI(cn, ...) \
     static constexpr class_id_t class_id = class_id_t(#cn); \
     static const ::myrtti::ClassInfo* info() { \
-        static ClassInfo v(#cn, class_id, ::myrtti::ClassInfo::mk_class_info_array<__VA_ARGS__>()); \
+        static ClassInfo v(#cn, class_id, ::myrtti::mk_class_ids<__VA_ARGS__>()); \
         return &v; \
     }
 

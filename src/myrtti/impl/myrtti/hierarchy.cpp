@@ -1,5 +1,8 @@
-#include "myrtti/dag.h"
+#include "myrtti/hierarchy.h"
+#include "myrtti/class_info.h"
 
 namespace myrtti {
-// TODO
+    class_id_t Hierarchy::resolveClassInfoId(const ClassInfo* classInfo) {
+        return classInfo->getId();
+    }
 }

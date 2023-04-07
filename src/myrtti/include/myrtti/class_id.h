@@ -16,17 +16,24 @@ struct class_id_t {
     bool operator==(const class_id_t& rhs) const noexcept {
         return value == rhs.value;
     }
-
-    struct hash {
-        uint64_t operator()(const class_id_t& clid) {
-            return clid.value;
-        }
-    };
+    // May be one day we will need this operator as well. But so far just
+    // let it sink commented into git.
+    //
+    //    bool operator==(uint64_t v) const noexcept {
+    //        return value == v;
+    //    }
 
     uint64_t value;
 };
 
 } // namespace myrtti
+
+template<>
+struct std::hash<myrtti::class_id_t> {
+    uint64_t operator()(const myrtti::class_id_t& clid) const {
+        return clid.value;
+    }
+};
 
 std::ostream& operator <<(std::ostream& s, const myrtti::class_id_t& clid);
 
