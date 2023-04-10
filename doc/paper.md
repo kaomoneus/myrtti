@@ -434,4 +434,126 @@ Let's try to introduce `Class::parents` constexpr array which will hold *class_i
 So here we still have a chance to match it.
 
 ### Visitor
-TODO
+Our version of visitor might be illustrated by following example:
+```c++
+    Visitor visitor(
+        [](const Exception& e) {
+            cout << "TEST EXCEPTION: Exception, msg: " << e.message << "\n";
+            return true;
+        },
+        [](const ExceptionErrorOne& e) {
+            cout << "TEST EXCEPTION: ExceptionOne.\n";
+            return true;
+        },
+        [](const ExceptionErrorTwo& e) {
+            cout << "TEST EXCEPTION: ExceptionTwo.\n";
+            return true;
+        }
+    );
+
+    visit(ExceptionErrorTwo());
+```
+Here `ExceptionXXX` are user-defined classes with *myrtti* information.
+
+So falling back to classic visitor pattern all *accept* methods are defined as
+lambdas.
+
+#### Construction stage
+On construction stagee *Visitor* uses
+[template parameters pack](https://en.cppreference.com/w/cpp/language/parameter_pack)
++ [fold expressions](https://en.cppreference.com/w/cpp/language/fold) to retrieve type information
+(`myrtti::ClassInfo`) and associate it with user-defined handler.
+
+Below is simplified code:
+```c++
+
+struct Visitor {
+   template<class ...Lambda>
+   explicit Visitor(Lambda&& ...L) {
+      init(std::function(L)...); // Trick to extract actual lambda prototypes.
+   }
+
+   template<class ...Cls>
+   void init(
+      // Here we able to retrieve exact class provided
+      // by used for this handler.
+      // Thus we're able to call access its Cls::class_id.
+      std::function<bool(Cls&)>&& ...visitors
+   ) {
+      (
+         [&] {
+            visitorsMap.emplace(Cls::class_id,
+               [=] (Object& b) {
+                     Cls& bb = b.template cast<Cls>();
+                     return visitors(bb);
+               }
+            );
+         } (), ...
+      );
+   }
+   // ...
+};
+```
+
+#### "visit" stage
+
+`Visitor::visit` can be called for objects with [*type erasure*](https://en.wikibooks.org/wiki/More_C%2B%2B_Idioms/Type_Erasure) applied. In another words you can apply it for `Object` references.
+
+So. Once we call `Visitor::visit(o)`, we do following:
+1. within `o->rtti` we extract runtime
+information
+2. walk through object types *hierarchy* (rememember `Hierarchy::instance()->add`?)
+3. check for `visitorsMap` whether we have handler attached to one of its ancesors.
+4. If parent found we call it.
+
+So event if there is *no* handler for exact type of object `o` we're still able
+to check for its parent types.
+
+Simplified code:
+```c++
+    bool visit(Object& b, bool notFoundResult = true) {
+        bool neverVisited = Hierarchy::instance()->unwind(
+            b.rtti->getId(),
+            [&] (const ClassInfo* cls) {
+                auto found = visitorsMap.find(cls->getId());
+                if (found != end(visitorsMap)) {
+                    // By returning false we force visitor to continue
+                    // unwinding search.
+                    bool visitHandled = found->second(b);
+                    return !visitHandled;
+                }
+                return true;
+            }
+        );
+        return !neverVisited;
+    }
+```
+
+#### Immutable/Muttable modes.
+
+Our visitor pattern allows to work in two modes:
+* Immutable (default). In this mode we must pass objects by constant reference.
+E.g. (`const ExceptionOne& e`).
+* Mutable. In this object we must pass objects without `const` qualifier.
+   In order to activate this mode you should define visitor with `false` template parameter:
+   ```c++
+   Visitor</*immutable=*/false> visitor(
+        [](Exception& e) { /*...*/ return true; }
+        // ...
+   );
+   ```
+### Futher work
+All above should rather considered as a design proposal for RTTI + Visitors in C++.
+
+We hope we will able to maintain this library and adopt it to generic use-cases.
+
+In nearest future we hope to imporove performance of `cast` for cases when it is replacable with `static_cast`.
+
+Also we consider to experiment with partial *reflection* features, like invoking methods by name.
+
+As another direction we're checking possibility to implement *clang* and *gcc* plugins so we could replace `RTTI_STRUCT_XXX` macros with `[[myrtti::add_runtime]]` attribute (or something similar)
+
+# That's it
+Thank you for reading.
+
+And, we're looking forward for your feedback!
