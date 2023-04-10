@@ -8,6 +8,16 @@
 
 namespace myrtti
 {
+    template<bool istrue, class TrueT, class FalseT>
+    struct __conditional {
+        using type = TrueT;
+    };
+
+    template<class TrueT, class FalseT>
+    struct __conditional<false, TrueT, FalseT> {
+        using type = FalseT;
+    };
+
     /// @brief Implements a visitor pattern which visits const references.
     ///
     /// Usage example:
@@ -28,23 +38,39 @@ namespace myrtti
     /// );
     /// visitor.visit(ExceptionErrorTwo());
     ///
-    struct VisitorConst {
+    template<bool immutable = true>
+    struct Visitor {
+        using object_ref = std::conditional_t<immutable, const Object&, Object&>;
 
         template<class ...Lambda>
-        explicit VisitorConst(Lambda&& ...L) {
+        explicit Visitor(Lambda&& ...L) {
             init(std::function(L)...);
         }
 
         template<class ...Cls>
-        void init(std::function<bool(const Cls&)>&& ...visitors) {
+        void init(
+            std::function<bool(Cls&)>&& ...visitors
+        ) {
             (
                 [&] {
+                    static_assert(
+                        !immutable || std::is_const_v<Cls>,
+                        "Please use type with 'const' qualifier while using"
+                        " immutable visitor"
+                    );
+
+                    static_assert(
+                        immutable || !std::is_const_v<Cls>,
+                        "Please use type without 'const' qualifier while using"
+                        " mutable visitor"
+                    );
+
                     std::cout << "VISITOR: Registered handler for "
                               << Cls::info() << "\n";
                     visitorsMap.emplace(
                         Cls::class_id,
-                        [=] (const Object& b) {
-                            const Cls& bb = b.cast<Cls>();
+                        [=] (object_ref b) {
+                            Cls& bb = b.template cast<Cls>();
                             return visitors(bb);
                         }
                     );
@@ -52,7 +78,7 @@ namespace myrtti
             );
         }
 
-    bool visit(const Object& b, bool notFoundResult = true) {
+    bool visit(object_ref b, bool notFoundResult = true) {
         std::cout << "VISITOR: Unwinding visit for class "
                   << b.rtti->name << "\n";
 
@@ -82,7 +108,7 @@ namespace myrtti
     private:
         std::unordered_map<
             class_id_t,
-            std::function<bool(const Object& b)>
+            std::function<bool(object_ref b)>
         > visitorsMap;
     };
 

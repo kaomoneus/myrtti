@@ -8,37 +8,28 @@
 using namespace std;
 using namespace myrtti;
 
-struct Exception : virtual Object, RTTI<Exception>
-{
-    DEFINE_RTTI(Exception, Object);
+RTTI_STRUCT_ROOT_BEGIN(Exception)
     Exception(const std::string_view &m) : message(m) {}
     string message;
-};
+RTTI_STRUCT_END();
 
-struct ExceptionErrorOne : Exception, RTTI<ExceptionErrorOne>
-{
-    DEFINE_RTTI(ExceptionErrorOne, Exception);
+RTTI_STRUCT_BEGIN(ExceptionErrorOne, (Exception))
     ExceptionErrorOne() : Exception("Exception One Error") {}
-};
+RTTI_STRUCT_END();
 
-struct ExceptionErrorTwo : Exception, RTTI<ExceptionErrorTwo>
-{
-    DEFINE_RTTI(ExceptionErrorTwo, Exception);
+RTTI_STRUCT_BEGIN(ExceptionErrorTwo, (Exception))
     ExceptionErrorTwo() : Exception("Exception Two Error") {}
+RTTI_STRUCT_END();
 
-};
-
-struct ExceptionErrorThree : Exception, RTTI<ExceptionErrorThree>
-{
-    DEFINE_RTTI(ExceptionErrorThree, Exception);
+RTTI_STRUCT_BEGIN(ExceptionErrorThree, (Exception))
     ExceptionErrorThree() : Exception("Exception Three Error") {}
-};
+RTTI_STRUCT_END();
 
 int main() {
 
     std::cout << "Checking classic visitor...\n";
 
-    VisitorConst visitor(
+    Visitor visitor(
         [](const Exception& e) {
             cout << "TEST EXCEPTION: Exception, msg: " << e.message << "\n";
             return true;
