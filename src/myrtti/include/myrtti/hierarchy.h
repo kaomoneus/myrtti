@@ -112,6 +112,18 @@ struct Hierarchy {
         );
     }
 
+    /// @brief Resolves ClassInfo by given class_id.
+    /// @param clsid class_id instance to be resolved for
+    /// @return ClassInfo pointer or nullptr is there is no such class
+    //          registered.
+    const ClassInfo* getClassInfo(class_id_t clsid) const {
+        auto found = idToClass.find(clsid);
+        if (found != end(idToClass))
+            return found->second;
+
+        return nullptr;
+    }
+
     Hierarchy& operator=(const Hierarchy& src) = delete;
 
     static Hierarchy* instance() {

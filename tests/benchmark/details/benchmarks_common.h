@@ -110,6 +110,8 @@ __attribute__((noinline)) ToT* __myrtti_cast(FromT o) {
     return r;
 }
 
+// TODO: consider making multiple instances to check average
+//   unordered_map performance.
 #define __MYRTTI_BENCHMARK(name, DYN_CAST, To, From) \
     BENCHMARK_F(InheritanceFixture, name)(benchmark::State& state) \
     { \

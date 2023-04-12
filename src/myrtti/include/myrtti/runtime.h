@@ -15,15 +15,25 @@
 #ifndef MYRTTI_RUNTIME_H
 #define MYRTTI_RUNTIME_H
 
+// Uncomment if you want to use std::unordered_map for crossPtrs
+// #define CROSS_PTRS_UNORDERED_MAP
+
 #include "myrtti/class_id.h"
 #include "myrtti/class_info.h"
+#include "myrtti/hierarchy.h"
 
 #include <array>
 #include <cstdlib>
 #include <iosfwd>
 #include <iostream>
 #include <utility>
+
+#ifndef CROSS_PTRS_UNORDERED_MAP
+#include <map>
+#else
 #include <unordered_map>
+#endif
+
 #include <type_traits>
 
 namespace myrtti {
@@ -45,16 +55,18 @@ struct Object {
     const ClassInfo* rtti = info();
 
     void reportCrossPtrs() {
-        #ifdef DEBUG_REPORT_CROSS_PTRS
+        #if defined(CROSS_PTRS_UNORDERED_MAP) && defined(DEBUG_REPORT_CROSS_PTRS)
         std::size_t bc = crossPtrs.bucket_count();
         std::cout << "CrossPtrs (" << rtti->name << "):\n";
         std::cout << "  Bucket count: " << bc << "\n";
+        std::cout << "  Max load factor: " << crossPtrs.max_load_factor() << "\n";
         for (std::size_t bucket = 0; bucket!=bc; ++bucket) {
             std::size_t bs = crossPtrs.bucket_size(bucket);
             std::cout << "    Bucket[" << bucket << "] size: " << crossPtrs.bucket_size(bucket) << "\n";
             std::size_t j = 0;
             for (auto item = crossPtrs.begin(bucket); item!= crossPtrs.end(bucket); ++item, ++j) {
-                std::cout << "        item[" << j << "]: " << item->first->name << "\n";
+                const auto* classInfo = Hierarchy::instance()->getClassInfo(item->first);
+                std::cout << "        item[" << j << "]: " << classInfo << "\n";
             }
         }
         #endif
@@ -109,7 +121,16 @@ protected:
     friend class RTTI;
 
     // Note: rtti field should be initialized before crossPtrs.
+    // Note #2: Even though unordered_map seems to be faster in average, but
+    //    in case of hash collisions performance might drop N times.
+    //    so far we have switched to std::map for it seems to be more stable,
+    //    showing similar results for our case.
+
+    #ifndef CROSS_PTRS_UNORDERED_MAP
+    std::map<class_id_t, void*> crossPtrs{{class_id, this}};
+    #else
     std::unordered_map<class_id_t, void*> crossPtrs{{class_id, this}};
+    #endif
 };
 
 // Problems:
@@ -190,8 +211,5 @@ template<class T>
 inline bool isa(const Object& o) { return T::class_id == o.rtti->getId();}
 
 } // namespace myrtti
-
-std::ostream& operator <<(std::ostream& s, const myrtti::ClassInfo* clid);
-std::ostream& operator <<(std::ostream& s, const myrtti::ClassInfo& clid);
 
 #endif

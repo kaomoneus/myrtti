@@ -92,7 +92,7 @@ namespace myrtti
             );
         }
 
-    bool visit(object_ref b, bool notFoundResult = true) {
+    bool visit(object_ref b) {
         std::cout << "VISITOR: Unwinding visit for class "
                   << b.rtti->name << "\n";
 

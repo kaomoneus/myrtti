@@ -223,12 +223,11 @@ So the benefits all together are:
 
 ### Example
 
+#### figures.h
 ```c++
-#include <iostream>
-#include <memory>
-#include <vector>
-
 #include <myrtti.h>
+
+using namespace myrtti;
 
 struct Shape : RTTI<Shape>
 {
@@ -245,6 +244,18 @@ struct Square : Shape, RTTI<Square>
     // class body
     // ...
 };
+```
+
+#### main.cpp
+
+```c++
+#include <iostream>
+#include <memory>
+#include <vector>
+
+#include "figures.h"
+
+using namespace std;
 
 int main() {
     vector<shared_ptr<Object>> objs = {
@@ -271,6 +282,8 @@ structure declaration with rtti into this:
 RTTI_STRUCT_BEGIN(Square, (Shape /*need more parents?*/))
     // Structure body here
     // ...
+    virtual float area() = 0;
+
     private:
     // Private members here
     // ...
@@ -294,15 +307,23 @@ Let's take a look at internals. There are few key things:
 
 * `ClassInfo` - Describes all runtime information available for given class.
    ```c++
+   // asdasd
+   namespace myrtti {
    struct ClassInfo {
       const char* name;
       // ...
       template<typename ArrayT>
-      ClassInfo(const char* name, const ArrayT& parents) : name(name) {
+      ClassInfo(
+         const char* name,
+         class_id_t classId,
+         const ArrayT& parents
+      )
+      : name(name), id(classId) {
          Hierarchy::instance()->add(this, parents);
       }
       // ...
    };
+   }
    ```
 * `Object` - All classes with RTTI are inherited from `Object`. This is implicitly done when you inherit from `RTTI` class marker. `Object` is a place where we hold runtime type information (pointer to `ClassInfo` instance).
    ```c++
@@ -511,7 +532,7 @@ to check for its parent types.
 
 Simplified code:
 ```c++
-    bool visit(Object& b, bool notFoundResult = true) {
+    bool visit(Object& b) {
         bool neverVisited = Hierarchy::instance()->unwind(
             b.rtti->getId(),
             [&] (const ClassInfo* cls) {

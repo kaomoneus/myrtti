@@ -45,4 +45,7 @@ private:
 };
 }
 
+std::ostream& operator <<(std::ostream& s, const myrtti::ClassInfo* clid);
+std::ostream& operator <<(std::ostream& s, const myrtti::ClassInfo& clid);
+
 #endif

@@ -19,19 +19,19 @@ find_package(benchmark REQUIRED)
 macro(benchmark_frtti benchmark_name)
     add_executable(${benchmark_name} ${benchmark_name}.cpp)
     target_link_libraries(${benchmark_name} benchmark::benchmark myrtti_frtti)
-    target_compile_options(${benchmark_name} PRIVATE "-frtti")
+    target_compile_options(${benchmark_name} PRIVATE "-frtti" ${ARGN})
 endmacro()
 
 macro(benchmark_fnortti benchmark_name)
     add_executable(${benchmark_name} ${benchmark_name}.cpp)
     target_link_libraries(${benchmark_name} benchmark::benchmark myrtti)
-    target_compile_options(${benchmark_name} PRIVATE "-fno-rtti")
+    target_compile_options(${benchmark_name} PRIVATE "-fno-rtti" ${ARGN})
 endmacro()
 
 macro(benchmark_profile benchmark_name)
     add_executable(${benchmark_name} ${benchmark_name}.cpp)
     target_link_libraries(${benchmark_name} benchmark::benchmark myrtti_profile)
-    target_compile_options(${benchmark_name} PRIVATE -fno-rtti -g -pg)
+    target_compile_options(${benchmark_name} PRIVATE -fno-rtti -g -pg ${ARGN})
     target_link_options(${benchmark_name} PRIVATE -fno-rtti -g -pg)
 endmacro()
 
@@ -118,6 +118,7 @@ endif()
 
 
 benchmark_frtti(compare_casts)
+# benchmark_frtti(compare_casts -DDEBUG_REPORT_CROSS_PTRS)
 benchmark_plot(compare_casts)
 
 benchmark_frtti(rtti_ops)
@@ -125,4 +126,4 @@ benchmark_frtti(rtti_ops)
 benchmark_frtti(legacy_casts)
 benchmark_fnortti(myrtti_casts)
 
-benchmark_disasm(myrtti_to_base -DDEBUG_REPORT_CROSS_PTRS)
+benchmark_disasm(myrtti_to_base)

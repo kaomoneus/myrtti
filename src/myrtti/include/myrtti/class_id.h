@@ -30,6 +30,9 @@ struct class_id_t {
     bool operator==(const class_id_t& rhs) const noexcept {
         return value == rhs.value;
     }
+    bool operator<(const class_id_t& rhs) const noexcept {
+        return value < rhs.value;
+    }
     // May be one day we will need this operator as well. But so far just
     // let it sink commented into git.
     //
