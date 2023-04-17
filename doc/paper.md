@@ -6,7 +6,9 @@ addional coding for classes definition.*
 *RTTI stands for Run-Time Type Information.*
 
 ### Goal
-Assuming we have a set of pointers of some `Base*`, I want to figure out its real type and do some appropriate actions.
+Assuming we have a set of pointers of some `Base*`:
+
+I want to figure out its real type and do some appropriate actions.
 
 E.g.
 ```c++
@@ -101,6 +103,7 @@ As a conclusion whenever your aim are goals from above, you have to implement bo
 
 
    ```c++
+   // .h
    template <typename ThisT, typename ParentT>
    class RTTIExtends : public ParentT {
    public:
@@ -126,8 +129,9 @@ As a conclusion whenever your aim are goals from above, you have to implement bo
       // class body
    };
 
+   // .cpp
    char Shape::ID = 0;
-   char Square::ID = 1;
+   char Square::ID = 0;
    ```
 
    * Pros:
