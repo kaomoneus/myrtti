@@ -23,7 +23,9 @@ set(CMAKE_LIBRARY_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/lib )
 set(CMAKE_ARCHIVE_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/lib )
 set(RTTI_SHARE_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/share )
 
-set(CMAKE_CXX_FLAGS "-Werror")
+if (NOT ${CMAKE_GENERATOR} MATCHES "Visual Studio")
+    set(CMAKE_CXX_FLAGS "-Werror")
+endif()
 
 option(MYRTTI_ENABLE_TESTS "Enable tests" ON)
 option(MYRTTI_ENABLE_TESTS_BENCHMARK "Enable benchmark test (requires google/benchmark lib to be installed)" OFF)
