@@ -118,7 +118,7 @@ struct Object {
 
 protected:
     template<class T>
-    friend class RTTI;
+    friend struct RTTI;
 
     // Note: rtti field should be initialized before crossPtrs.
     // Note #2: Even though unordered_map seems to be faster in average, but
@@ -176,9 +176,9 @@ mk_class_ids() {
 // We use constexpr crc64 implementation, written by Sam Belliveau
 // https://gist.github.com/Sam-Belliveau/72ba4a8710324ce7a1ac1789d64ec831
 #define DEFINE_RTTI(cn, ...) \
-    static constexpr class_id_t class_id = class_id_t(#cn); \
+    static constexpr myrtti::class_id_t class_id = myrtti::class_id_t(#cn); \
     static const ::myrtti::ClassInfo* info() { \
-        static ClassInfo v(#cn, class_id, ::myrtti::mk_class_ids<__VA_ARGS__>()); \
+        static myrtti::ClassInfo v(#cn, class_id, ::myrtti::mk_class_ids<__VA_ARGS__>()); \
         return &v; \
     }
 

@@ -55,7 +55,7 @@ namespace crc
         static constexpr size max = 0x100;
 
         // get return type of generator
-        using return_type = typename std::result_of<Generator(const byte)>::type;
+        using return_type = typename std::invoke_result_t<Generator, const byte>;
 
     private:
         // store PolyTable
