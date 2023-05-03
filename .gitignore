@@ -2,6 +2,10 @@ build
 build/*
 build/**
 
+.idea
+.idea/*
+.idea/**
+
 .vscode
 .vscode/*
 .vscode/**
@@ -9,3 +13,4 @@ build/**
 .sandbox
 .sandbox/*
 .sandbox/**
+cmake-build-*/**
