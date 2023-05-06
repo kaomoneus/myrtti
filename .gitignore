@@ -14,3 +14,5 @@ build/**
 .sandbox/*
 .sandbox/**
 cmake-build-*/**
+
+.DS_Store

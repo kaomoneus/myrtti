@@ -27,9 +27,10 @@ RTTI_STRUCT_ROOT_BEGIN(Exception)
     string message;
 RTTI_STRUCT_END();
 
-RTTI_STRUCT_BEGIN(ExceptionErrorOne, (Exception))
+class_rtti_parents(ExceptionErrorOne, (Exception))
+public:
     ExceptionErrorOne() : Exception("Exception One Error") {}
-RTTI_STRUCT_END();
+class_rtti_end();
 
 RTTI_STRUCT_BEGIN(ExceptionErrorTwo, (Exception))
     ExceptionErrorTwo() : Exception("Exception Two Error") {}

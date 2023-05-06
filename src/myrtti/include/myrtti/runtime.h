@@ -18,6 +18,8 @@
 // Uncomment if you want to use std::unordered_map for crossPtrs
 // #define CROSS_PTRS_UNORDERED_MAP
 
+#include "utils/macros/va_arg_prefix.h"
+
 #include "myrtti/class_id.h"
 #include "myrtti/class_info.h"
 #include "myrtti/hierarchy.h"
@@ -76,6 +78,10 @@ struct Object {
     // dyn_cast
     //
 
+    // TODO: combine "cast" and "cast() const" ... using const_cast?
+    // TODO: introduce "smart_static_cast" to compete with UE for single inharitance schema.
+    //    perhaps we also could do constexpr check whether we're casting from virtual
+    //    class? Then we need constexpr collection of virtual bases.
     template<class T, std::enable_if_t<!std::is_pointer<T>::value, bool> = true>
     T& cast() {
         // TODO: Validate that T::info() takes longer time for polymorphic types.
@@ -197,6 +203,37 @@ struct name : RTTI_ESC runtime_parents, ::myrtti::RTTI<name> { \
     DEFINE_RTTI(name, RTTI_ESC runtime_parents); \
 
 #define RTTI_STRUCT_END() };
+
+#define class_rtti(name, parent) \
+    class name : public parent, ::myrtti::RTTI<name> { \
+    DEFINE_RTTI(name, parent);   \
+
+#define class_rtti_parents(name, parents)  \
+    class name :                           \
+        VA_PREF(public, RTTI_ESC parents), \
+        public ::myrtti::RTTI<name> {      \
+    public:                                \
+    DEFINE_RTTI(name, RTTI_ESC parents);   \
+    private:                               \
+
+#define class_rtti_vparents_parents(name, virtual_parents, parents)  \
+    class name :                                                     \
+        VA_PREF(public, VA_PREF(virtual, RTTI_ESC virtual_parents)), \
+        VA_PREF(public, RTTI_ESC parents),                           \
+        public ::myrtti::RTTI<name> {                                \
+    public:                                                          \
+    DEFINE_RTTI(name, RTTI_ESC virtual_parents, RTTI_ESC parents);   \
+    private:                                                         \
+
+#define class_rtti_vparents(name, virtual_parents)                   \
+    class name :                                                     \
+        VA_PREF(public, VA_PREF(virtual, RTTI_ESC virtual_parents)), \
+        public ::myrtti::RTTI<name> {                                \
+    public:                                                          \
+    DEFINE_RTTI(name, RTTI_ESC virtual_parents);                     \
+    private:                                                         \
+
+#define class_rtti_end() }
 
 template<class T, std::enable_if_t<std::is_pointer<T>::value, bool> = true>
 inline T dyn_cast(Object* o) {return o->cast<T>();}
