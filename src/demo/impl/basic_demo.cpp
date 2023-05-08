@@ -37,17 +37,17 @@ struct Circle : Shape, RTTI<Circle>
     DEFINE_RTTI(Circle, Shape);
 };
 
-RTTI_STRUCT_BEGIN(CircleSquare, (Circle, Square))
+with_rtti_parents(struct, CircleSquare, (Circle, Square))
     CircleSquare(int numCircles, int numSquares)
     : numCircles(numCircles), numSquares(numSquares) {}
 
     int numCircles;
     int numSquares;
-RTTI_STRUCT_END()
+with_rtti_end();
 
-RTTI_STRUCT_BEGIN(CircleSquareFirstKid, (CircleSquare))
+with_rtti(struct, CircleSquareFirstKid, CircleSquare)
     CircleSquareFirstKid() : CircleSquare(1,1) {}
-RTTI_STRUCT_END()
+with_rtti_end();
 
 int main() {
 

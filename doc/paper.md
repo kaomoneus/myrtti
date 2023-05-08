@@ -283,7 +283,7 @@ declaration. If you're not too disdained about macros we could rewrite
 structure declaration with rtti into this:
 
 ```c++
-RTTI_STRUCT_BEGIN(Square, (Shape /*need more parents?*/))
+with_rtti(struct, Square, Shape)
     // Structure body here
     // ...
     virtual float area() = 0;
@@ -291,8 +291,12 @@ RTTI_STRUCT_BEGIN(Square, (Shape /*need more parents?*/))
     private:
     // Private members here
     // ...
-RTTI_STRUCT_END()
+with_rtti_end()
 ```
+
+*NOTE: if you need multiple parents, then you can use `with_rtti_parents(struct_or_class, name, parents)`. There 
+is also `with_rtti_vparents_parents` and other versions of this macro.*
+
 
 Pros and cons of using such macros
 
@@ -396,9 +400,6 @@ Let's take a look at internals. There are few key things:
 Even though `myrtti::Object` is virtual, we restrict our solution to use only non-virtual inharitence so far.
 
 The reason is that we still didn't check all the consequencies if we enable virtual parents.
-
-#### RTTI_STRUCT is... struct
-As we said, for heavy `RTTI_STRUCT_xxx` macros are possible for *structs* only.
 
 #### Anything else?
 Who knows? Better to keep this part vacant than absent at all.
@@ -576,7 +577,7 @@ In nearest future we hope to imporove performance of `cast` for cases when it is
 
 Also we consider to experiment with partial *reflection* features, like invoking methods by name.
 
-As another direction we're checking possibility to implement *clang* and *gcc* plugins so we could replace `RTTI_STRUCT_XXX` macros with `[[myrtti::add_runtime]]` attribute (or something similar)
+As another direction we're checking possibility to implement *clang* and *gcc* plugins so we could replace `with_rtti` macros with `[[myrtti::add_runtime]]` attribute (or something similar)
 
 # That's it
 Thank you for reading.

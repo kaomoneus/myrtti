@@ -22,23 +22,24 @@
 using namespace std;
 using namespace myrtti;
 
-RTTI_STRUCT_ROOT_BEGIN(Exception)
+with_rtti_vparents(struct, Exception, (myrtti::Object))
     Exception(const std::string_view &m) : message(m) {}
     string message;
-RTTI_STRUCT_END();
+with_rtti_end();
 
-class_rtti_parents(ExceptionErrorOne, (Exception))
+with_rtti(class, ExceptionErrorOne, Exception)
 public:
     ExceptionErrorOne() : Exception("Exception One Error") {}
-class_rtti_end();
+with_rtti_end();
 
-RTTI_STRUCT_BEGIN(ExceptionErrorTwo, (Exception))
+
+with_rtti_parents(struct, ExceptionErrorTwo, (Exception))
     ExceptionErrorTwo() : Exception("Exception Two Error") {}
-RTTI_STRUCT_END();
+with_rtti_end();
 
-RTTI_STRUCT_BEGIN(ExceptionErrorThree, (Exception))
+with_rtti_vparents_parents(struct, ExceptionErrorThree, (myrtti::Object), (Exception))
     ExceptionErrorThree() : Exception("Exception Three Error") {}
-RTTI_STRUCT_END();
+with_rtti_end();
 
 int main() {
 

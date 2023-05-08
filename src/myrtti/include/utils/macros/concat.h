@@ -12,27 +12,11 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-#ifndef VAMACRO_HELPER
-#define VAMACRO_HELPER
+#ifndef MYRTTI_CONCAT_H
+#define MYRTTI_CONCAT_H
 
-#include "concat.h"
-#include "narg.h"
-
-
-// (pref, arg) pref arg
-
-#define VAMACRO_PREFIX_1(pref, arg) pref arg
-#define VAMACRO_PREFIX_2(pref, arg1, arg2) pref arg1, pref arg2
-#define VAMACRO_PREFIX_3(pref, arg1, arg2) pref arg, pref arg, pref arg
-
-// generate up to 64 VAMACRO_PREFIX_<N>
-
-#define PRIMITIVE_CAT(a, ...) a ## __VA_ARGS__
-
-#define __MY_RTTI_PREF_N(N, pref, ...) \
-    MYRTTI_CAT(VAMACRO_PREFIX_, N)(pref, __VA_ARGS__)
-
-#define MYRTTI_ADD_VA_PREFIX(pref, ...) \
-    __MY_RTTI_PREF_N(PP_NARG(__VA_ARGS__), pref, __VA_ARGS__) \
+#define MYRTTI_CAT(arg1, arg2)   __MY_RTTI_CAT1(arg1, arg2)
+#define __MY_RTTI_CAT1(arg1, arg2)  __MY_RTTI_CAT2(arg1, arg2)
+#define __MY_RTTI_CAT2(arg1, arg2)  arg1##arg2
 
 #endif

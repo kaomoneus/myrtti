@@ -27,16 +27,16 @@ def emit_myrtti(name_base: str, depth: int, output: pathlib.Path):
             "#pragma once",
             "#include <myrtti.h>",
             "",
-            f"RTTI_STRUCT_ROOT_BEGIN({cls_name(0)})",
-            "RTTI_STRUCT_END();",
+            f"with_rtti_root({cls_name(0)})",
+            "with_rtti_end();",
             "",
         ])
 
         for i in range(1, depth):
             LOG.info(f"    myrtti:    writing {cls_name(i)}")
             _lines(f, [
-                f"RTTI_STRUCT_BEGIN({cls_name(i)}, ({cls_name(i-1)}))",
-                "RTTI_STRUCT_END();",
+                f"with_rtti(struct, {cls_name(i)}, ({cls_name(i-1)}))",
+                "with_rtti_end();",
                 "",
             ])
 

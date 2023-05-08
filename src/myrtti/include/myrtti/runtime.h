@@ -188,52 +188,49 @@ mk_class_ids() {
         return &v; \
     }
 
-#define RTTI_ESC(...) __VA_ARGS__
+#define MYRTTI_ESC(...) __VA_ARGS__
 
-#define RTTI_STRUCT_AND_TRAITS_BEGIN(name, runtime_parents, traits) \
-struct name : RTTI_ESC traits, RTTI_ESC runtime_parents, ::myrtti::RTTI<name> { \
-    DEFINE_RTTI(name, RTTI_ESC(runtime_parents)); \
-
-#define RTTI_STRUCT_ROOT_BEGIN(name) \
+#define with_rtti_root(name) \
 struct name : ::myrtti::RTTI<name> { \
     DEFINE_RTTI(name, ::myrtti::Object); \
 
-#define RTTI_STRUCT_BEGIN(name, runtime_parents) \
-struct name : RTTI_ESC runtime_parents, ::myrtti::RTTI<name> { \
-    DEFINE_RTTI(name, RTTI_ESC runtime_parents); \
+#define MYRTTI_DEFAULT_ACCESS(class_or_struct) MYRTTI_CAT(__MYRTTI_DEFAULT_ACCESS_, class_or_struct)
+#define __MYRTTI_DEFAULT_ACCESS_class private:
+#define __MYRTTI_DEFAULT_ACCESS_struct public:
 
-#define RTTI_STRUCT_END() };
+#define with_rtti(class_or_struct, name, parent)                        \
+    class_or_struct name : public parent, public ::myrtti::RTTI<name> { \
+    public:                                                             \
+    DEFINE_RTTI(name, parent);                                          \
+    MYRTTI_DEFAULT_ACCESS(class_or_struct)                              \
 
-#define class_rtti(name, parent) \
-    class name : public parent, ::myrtti::RTTI<name> { \
-    DEFINE_RTTI(name, parent);   \
+#define with_rtti_parents(class_or_struct, name, parents)               \
+    class_or_struct name :                                              \
+    MYRTTI_ADD_VA_PREFIX(public, MYRTTI_ESC parents),                   \
+    public ::myrtti::RTTI<name> {                                       \
+    public:                                                             \
+    DEFINE_RTTI(name, MYRTTI_ESC parents);                              \
+    MYRTTI_DEFAULT_ACCESS(class_or_struct)                              \
 
-#define class_rtti_parents(name, parents)  \
-    class name :                           \
-        VA_PREF(public, RTTI_ESC parents), \
-        public ::myrtti::RTTI<name> {      \
-    public:                                \
-    DEFINE_RTTI(name, RTTI_ESC parents);   \
-    private:                               \
+#define with_rtti_vparents_parents(class_or_struct, name, virtual_parents, parents)              \
+    class_or_struct name :                                                                       \
+        MYRTTI_ADD_VA_PREFIX(public, MYRTTI_ADD_VA_PREFIX(virtual, MYRTTI_ESC virtual_parents)), \
+        MYRTTI_ADD_VA_PREFIX(public, MYRTTI_ESC parents),                                        \
+        public ::myrtti::RTTI<name> {                                                            \
+    public:                                                                                      \
+    DEFINE_RTTI(name, MYRTTI_ESC virtual_parents, MYRTTI_ESC parents);                           \
+    MYRTTI_DEFAULT_ACCESS(class_or_struct)                                                       \
 
-#define class_rtti_vparents_parents(name, virtual_parents, parents)  \
-    class name :                                                     \
-        VA_PREF(public, VA_PREF(virtual, RTTI_ESC virtual_parents)), \
-        VA_PREF(public, RTTI_ESC parents),                           \
-        public ::myrtti::RTTI<name> {                                \
-    public:                                                          \
-    DEFINE_RTTI(name, RTTI_ESC virtual_parents, RTTI_ESC parents);   \
-    private:                                                         \
+#define with_rtti_vparents(class_or_struct, name, virtual_parents)                               \
+    class_or_struct name :                                                                       \
+        MYRTTI_ADD_VA_PREFIX(public, MYRTTI_ADD_VA_PREFIX(virtual, MYRTTI_ESC virtual_parents)), \
+        public ::myrtti::RTTI<name> {                                                            \
+    public:                                                                                      \
+    DEFINE_RTTI(name, MYRTTI_ESC virtual_parents);                                               \
+    MYRTTI_DEFAULT_ACCESS(class_or_struct)                                                       \
 
-#define class_rtti_vparents(name, virtual_parents)                   \
-    class name :                                                     \
-        VA_PREF(public, VA_PREF(virtual, RTTI_ESC virtual_parents)), \
-        public ::myrtti::RTTI<name> {                                \
-    public:                                                          \
-    DEFINE_RTTI(name, RTTI_ESC virtual_parents);                     \
-    private:                                                         \
 
-#define class_rtti_end() }
+#define with_rtti_end() }
 
 template<class T, std::enable_if_t<std::is_pointer<T>::value, bool> = true>
 inline T dyn_cast(Object* o) {return o->cast<T>();}
