@@ -96,9 +96,9 @@ namespace myrtti
         std::cout << "VISITOR: Unwinding visit for class "
                   << b.rtti->name << "\n";
 
-        bool neverVisited = Hierarchy::instance()->destruct(
+        bool neverVisited = Hierarchy::instance()->unwind(
             b.rtti->getId(),
-            [&] (const ClassInfo* cls) {
+            [&](const ClassInfo *cls) {
                 std::cout << std::hex
                 << "VISITOR:   Visiting class " << cls << "\n";
                 auto found = visitorsMap.find(cls->getId());
@@ -167,9 +167,9 @@ namespace myrtti
         bool visit() {
             std::cout << "STATIC VISITOR: Unwinding visit for class " << ClassT::info() << "\n";
 
-            bool neverVisited = Hierarchy::instance()->destruct(
+            bool neverVisited = Hierarchy::instance()->unwind(
                 ClassT::class_id(),
-                [&] (const ClassInfo* cls) {
+                [&](const ClassInfo *cls) {
                     std::cout << std::hex
                     << "STATIC VISITOR:   Visiting class " << cls << "\n";
                     auto found = visitorsMap.find(cls->getId());

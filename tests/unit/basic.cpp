@@ -128,12 +128,12 @@ TEST(Basic, VirtualPrents) {
     std::ostringstream unwindWalk;
 
     // TODO: h->windup<Z>([...]{...});
-    h->construct(Z::class_id(), [&] (const myrtti::ClassInfo* cls) {
+    h->windup(Z::class_id(), [&](const myrtti::ClassInfo *cls) {
         if (cls != myrtti::Object::info() and cls != Base::info())
             windupWalk << cls->name;
         return true;
     });
-    h->destruct(Z::class_id(), [&] (const myrtti::ClassInfo* cls) {
+    h->unwind(Z::class_id(), [&](const myrtti::ClassInfo *cls) {
         if (cls != myrtti::Object::info() and cls != Base::info())
             unwindWalk << cls->name;
         return true;

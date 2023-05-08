@@ -88,7 +88,7 @@ struct Hierarchy {
     /// @param onNode node callback.
     /// @return true if search completed successfully and 'false' if it
     ///         was interrupted by callback.
-    bool construct(class_id_t clsid, const node_callback_t& onNode) {
+    bool windup(class_id_t clsid, const node_callback_t& onNode) {
         return dag.dfs(clsid,
             /*onBeforeNode*/ nullptr,
             /*onAfterNode*/ [&](class_id_t traversedClsId) {
@@ -104,7 +104,7 @@ struct Hierarchy {
     /// @param onNode node callback.
     /// @return true if search completed successfully and 'false' if it
     ///         was interrupted by callback.
-    bool destruct(class_id_t clsid, const node_callback_t& onNode) {
+    bool unwind(class_id_t clsid, const node_callback_t& onNode) {
         return dag.dfs(clsid,
             /*onBeforeNode*/ [&](class_id_t traversedClsId) {
                 const ClassInfo* traversedCls = idToClass[traversedClsId];
