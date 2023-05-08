@@ -12,19 +12,18 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-if (MYRTTY_CLANG_ROOT)
-    add_subdirectory(clang-plugin)
-endif()
+set(MYRTTI_UNITTESTS myrtti_unittests)
 
-if (MYRTTI_ENABLE_TESTS_BENCHMARK)
-    add_subdirectory(benchmark)
-endif()
+enable_testing()
 
-find_package(GTEST)
+add_executable(
+  ${MYRTTI_UNITTESTS}
+  basic.cpp
+)
+target_link_libraries(
+  ${MYRTTI_UNITTESTS}
+  GTest::gtest_main
+)
 
-if (GTEST_FOUND)
-    message("Found Google Test.")
-    add_subdirectory(unit)
-else()
-    message("Google Test not found, unit tests will be disabled.")
-endif()
+include(GoogleTest)
+gtest_discover_tests(${MYRTTI_UNITTESTS})
