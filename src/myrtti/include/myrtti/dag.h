@@ -33,16 +33,18 @@ struct DAG {
     /// @param cls class to be added
     /// @param parents parents list
     template <class ArrayT>
-    void add(NodeIdT cls, const ArrayT& parents) {
+    bool add(NodeIdT cls, const ArrayT& parents) {
 
         auto [it, inserted] =  nodes.insert(cls);
-        assert(inserted && "We can add each node only once.");
+        if (!inserted)
+            return false;
 
         if (parents.empty()) {
             roots.insert(cls);
         } else {
             incomingEdges.emplace(cls, nodes_list_t(begin(parents), end(parents)));
         }
+        return true;
     }
 
     /// @brief Callback type for use with graph walking methods.
