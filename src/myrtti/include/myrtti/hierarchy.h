@@ -108,7 +108,9 @@ struct Hierarchy {
             /*onBeforeNode*/ [&](class_id_t traversedClsId) {
                 const ClassInfo* traversedCls = idToClass[traversedClsId];
                 return onNode(traversedCls);
-            }
+            },
+            /*onAfterNode*/ nullptr,
+            /*reversiveSideWalk*/ true
         );
     }
 
