@@ -36,13 +36,13 @@ struct class_id_t {
         value = engine(className, std::forward<Args>(d)...);
     }
 
-    bool operator==(const class_id_t& rhs) const noexcept {
+    constexpr bool operator==(const class_id_t& rhs) const noexcept {
         return value == rhs.value;
     }
-    bool operator!=(const class_id_t& rhs) const noexcept {
+    constexpr bool operator!=(const class_id_t& rhs) const noexcept {
         return value != rhs.value;
     }
-    bool operator<(const class_id_t& rhs) const noexcept {
+    constexpr bool operator<(const class_id_t& rhs) const noexcept {
         return value < rhs.value;
     }
     // May be one day we will need this operator as well. But so far just
