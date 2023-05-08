@@ -23,6 +23,22 @@ TEST(Basic, SingleParent) {
     with_rtti_root(struct, TestRoot)
     with_rtti_end();
 
+    with_rtti(struct, Final, TestRoot)
+    with_rtti_end();
+
+    Final instance;
+    TestRoot *p = &instance;
+    const TestRoot *pConst = &instance;
+
+    EXPECT_STREQ(p->rtti->name, "Final");
+    EXPECT_EQ(p->rtti->getId(), Final::class_id());
+}
+
+TEST(Basic, DynCast) {
+
+    with_rtti_root(struct, TestRoot)
+    with_rtti_end();
+
     with_rtti_root(struct, TestRoot2)
     with_rtti_end();
 
@@ -32,15 +48,50 @@ TEST(Basic, SingleParent) {
     Final instance;
     TestRoot2 instance2;
     TestRoot *p = &instance;
-
-    EXPECT_STREQ(p->rtti->name, "Final");
-    EXPECT_EQ(p->rtti->getId(), Final::class_id());
+    const TestRoot *pConst = &instance;
 
     auto *pp = myrtti::dyn_cast<Final*>(&instance);
     auto *pp2 = myrtti::dyn_cast<Final*>(&instance2);
 
+    auto &r = p->cast<Final>();
+    auto *pp3 = p->cast<Final*>();
+
+    const auto &rConst = p->cast<Final&>();
+    const auto *pp3Const = p->cast<Final*>();
+
     EXPECT_NE(pp, nullptr);
     EXPECT_EQ(pp2, nullptr);
+    EXPECT_NE(pp3, nullptr);
+    EXPECT_NE(pp3Const, nullptr);
+}
+
+TEST(Basic, TryStatic) {
+
+    with_rtti_root(struct, TestRoot)
+    with_rtti_end();
+
+    with_rtti(struct, Final, TestRoot)
+    with_rtti_end();
+
+    with_rtti(struct, Final2, TestRoot)
+    with_rtti_end();
+
+    Final instance;
+    Final2 instance2;
+
+    TestRoot* p = &instance;
+    TestRoot* p2 = &instance2;
+
+    auto *pp = myrtti::try_static_cast<Final*>(p);
+    auto *pp2 = myrtti::try_static_cast<TestRoot*>(&instance);
+    auto *pp3 = myrtti::try_static_cast<Final*>(p2);
+
+    EXPECT_NE(pp, nullptr);
+    EXPECT_NE(pp2, nullptr);
+    EXPECT_STREQ(pp->rtti->name, "Final");
+    EXPECT_STREQ(pp2->rtti->name, "Final");
+
+    EXPECT_EQ(pp3, nullptr);
 }
 
 TEST(Basic, ManyParents) {

@@ -78,45 +78,45 @@ struct Object {
     // dyn_cast
     //
 
-    // TODO: combine "cast" and "cast() const" ... using const_cast?
-    // TODO: introduce "smart_static_cast" to compete with UE for single inharitance schema.
-    //    perhaps we also could do constexpr check whether we're casting from virtual
-    //    class? Then we need constexpr collection of virtual bases.
-    template<class T, std::enable_if_t<!std::is_pointer<T>::value, bool> = true>
+    template<class T, std::enable_if_t<!std::is_pointer_v<T>, bool> = true>
     T& cast() {
-        // TODO: Validate that T::info() takes longer time for polymorphic types.
-        auto found = this->crossPtrs.find(T::class_id());
-        if (/*[[likely]]*/ found != end(this->crossPtrs)) {
-            return *static_cast<T*>(found->second);
-        }
-        // Unable to cast, unable to return null, panic.
-        abort();
+        using TT = std::add_const_t<T&>;
+        return const_cast<T&>(
+            const_cast<const Object*>(this)->cast<TT>()
+        );
     }
 
-    template<class T, std::enable_if_t<std::is_pointer<T>::value, bool> = true>
+    template<class T, std::enable_if_t<std::is_pointer_v<T>, bool> = true>
     T cast() {
-        using _T = std::remove_pointer_t<T>;
-        auto found = this->crossPtrs.find(_T::class_id());
-        if (/*[[likely]]*/ found != end(this->crossPtrs)) {
-            return static_cast<T>(found->second);
-        }
-        return nullptr;
+        using TT = std::add_const_t<T>;
+        return const_cast<T>(
+            const_cast<const Object*>(this)->cast<TT>()
+        );
     }
 
-    template<class T, std::enable_if_t<!std::is_pointer<T>::value, bool> = true>
+    // NOTE: we can not replace `enable_if` with `if constexpr`, because
+    //   method prototypes are not unified enough.
+    //   * If user calls `cast<SomeType>` then we should return reference to existing object.
+    //   * If user calls `cast<SomeType*>` then we should return a copy of discovered pointer.
+    //   Of course we can use some super logic and craft smth like
+    //      `ret_type<T> cast() {...}`
+    //   but ret_type will be quite complicated as well.
+    //   Keeping in mind, that we would had two `if constexpr` branches, we won't make resulting code any smaller.
+    template<class T, std::enable_if_t<!std::is_pointer_v<T>, bool> = true>
     const T& cast() const {
-        auto found = this->crossPtrs.find(T::class_id());
+        using TT = std::remove_reference_t<T>;
+        auto found = this->crossPtrs.find(TT ::class_id());
         if (/*[[likely]]*/ found != end(this->crossPtrs)) {
-            return *static_cast<T*>(found->second);
+            return *static_cast<TT*>(found->second);
         }
         // Unable to cast, unable to return null, panic.
         abort();
     }
 
-    template<class T, std::enable_if_t<std::is_pointer<T>::value, bool> = true>
-    const T cast() const {
-        using _T = std::remove_pointer_t<T>;
-        auto found = this->crossPtrs.find(_T::class_id());
+    template<class T, std::enable_if_t<std::is_pointer_v<T>, bool> = true>
+    T cast() const {
+        using TT = std::remove_pointer_t<T>;
+        auto found = this->crossPtrs.find(TT::class_id());
         if (found != end(this->crossPtrs))
             return static_cast<T>(found->second);
         return nullptr;
@@ -125,6 +125,9 @@ struct Object {
 protected:
     template<class T>
     friend struct RTTI;
+
+    template<class T, class From>
+    friend T try_static_cast(From* from);
 
     // Note: rtti field should be initialized before crossPtrs.
     // Note #2: Even though unordered_map seems to be faster in average, but
@@ -237,6 +240,22 @@ template<class T>
 inline bool isa(const Object* o) { return T::class_id() == o->rtti->getId();}
 template<class T>
 inline bool isa(const Object& o) { return T::class_id() == o.rtti->getId();}
+
+//
+// try_static_cast
+//
+template<class T, class From>
+T try_static_cast(From* from) {
+    static_assert(std::is_pointer_v<T> && "T must be a pointer type.");
+    static_assert(From::class_id() != Object::class_id() && "Unable static_cast from virtual Object class.");
+
+    // TODO: for debug modes also add verification whether there is straight static (non-virtual) inheritance line
+    //   between From and To.
+    using TT = std::remove_pointer_t<T>;
+    if (from->crossPtrs.count(TT::class_id()))
+        return static_cast<T>(from);
+    return nullptr;
+}
 
 } // namespace myrtti
 
