@@ -233,7 +233,6 @@ inline T dyn_cast(Object* o) {return o->cast<T>();}
 template<class T, std::enable_if_t<!std::is_pointer<T>::value, bool> = true>
 inline T& dyn_cast(Object& o) {return o.cast<T>();}
 
-
 template<class T>
 inline bool isa(const Object* o) { return T::class_id() == o->rtti->getId();}
 template<class T>

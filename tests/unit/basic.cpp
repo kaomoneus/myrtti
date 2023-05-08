@@ -23,14 +23,24 @@ TEST(Basic, SingleParent) {
     with_rtti_root(struct, TestRoot)
     with_rtti_end();
 
+    with_rtti_root(struct, TestRoot2)
+    with_rtti_end();
+
     with_rtti(struct, Final, TestRoot)
     with_rtti_end();
 
     Final instance;
+    TestRoot2 instance2;
     TestRoot *p = &instance;
 
     EXPECT_STREQ(p->rtti->name, "Final");
     EXPECT_EQ(p->rtti->getId(), Final::class_id());
+
+    auto *pp = myrtti::dyn_cast<Final*>(&instance);
+    auto *pp2 = myrtti::dyn_cast<Final*>(&instance2);
+
+    EXPECT_NE(pp, nullptr);
+    EXPECT_EQ(pp2, nullptr);
 }
 
 TEST(Basic, ManyParents) {
