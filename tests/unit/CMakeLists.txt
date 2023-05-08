@@ -19,6 +19,7 @@ enable_testing()
 add_executable(
   ${MYRTTI_UNITTESTS}
   basic.cpp
+  class_id.cpp
 )
 target_link_libraries(
   ${MYRTTI_UNITTESTS}

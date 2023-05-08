@@ -165,13 +165,25 @@ namespace crc
         constexpr return_type operator()(const T& data) const noexcept
         { return Finalize(AddData(InitState, data)); }
 
+        template<class ...Args>
+        constexpr return_type operator()(Args&& ...args) const noexcept
+        {
+            return_type s = InitState;
+            (
+                [&] {
+                    s = AddData(s, args);
+                } (), ...
+            );
+            return Finalize(s);
+        }
+
         // Compute Hash on generic types
         template<class Iterator> // (begin,  end)
-        constexpr return_type operator()(const Iterator begin, const Iterator end) const noexcept
+        constexpr return_type array(const Iterator begin, const Iterator end) const noexcept
         { return Finalize(AddDataArray(InitState, begin, end)); }
 
         template<class Iterator> // (begin, size)
-        constexpr return_type operator()(const Iterator data, const size_type size) const noexcept
+        constexpr return_type array(const Iterator data, const size_type size) const noexcept
         { return Finalize(AddDataArray(InitState, data, data + size)); }
     };
 
