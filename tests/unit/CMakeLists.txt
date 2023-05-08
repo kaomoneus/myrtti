@@ -22,7 +22,7 @@ add_executable(
 )
 target_link_libraries(
   ${MYRTTI_UNITTESTS}
-  GTest::gtest_main
+  GTest::gtest_main myrtti
 )
 
 include(GoogleTest)
