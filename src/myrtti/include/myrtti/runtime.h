@@ -47,9 +47,9 @@ struct Object {
         reportCrossPtrs();
     }
 
-    static constexpr class_id_t class_id() { return {"Object"}; }
+    static constexpr class_id_t class_id() { return {"myrtti::Object"}; }
     static const ClassInfo* info() {
-        static ClassInfo v("Object", class_id());
+        static ClassInfo v("myrtti::Object", class_id());
         return &v;
     }
 
@@ -172,10 +172,10 @@ using strip_type = std::remove_pointer_t<
 template<class B, class T>
 using is_base_of = std::is_base_of<strip_type<B>, strip_type<T>>;
 
-// We use constexpr crc64 implementation, written by Sam Belliveau
-// https://gist.github.com/Sam-Belliveau/72ba4a8710324ce7a1ac1789d64ec831
+#define MYRTTI_UNIQUE_NAME(cn) #cn, __FILE__, __LINE__
+
 #define DEFINE_RTTI(cn, ...) \
-    static constexpr myrtti::class_id_t class_id() { return {#cn}; }                                   \
+    static constexpr myrtti::class_id_t class_id() { return {MYRTTI_UNIQUE_NAME(cn)}; }                       \
     static const ::myrtti::ClassInfo* info() {                                                         \
         static std::unique_ptr<myrtti::ClassInfo> p = myrtti::ClassInfo::create<cn, __VA_ARGS__>(#cn); \
         return p.get(); \

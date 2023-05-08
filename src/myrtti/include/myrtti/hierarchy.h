@@ -41,12 +41,7 @@ struct Hierarchy {
         auto clsId = resolveClassInfoId(cls);
 
         bool inserted = dag.add(clsId, parentIds);
-        assert(inserted &&
-            "We can register each class only once."
-            " If you're using same name in different namespaces, consider using fully qualified names in"
-            " rtti declaration macros."
-            " If you're using RTTI with local classes consider naming them with unique prefix."
-        );
+        assert(inserted && "We can register each class only once.");
 
         auto [it, added] = idToClass.emplace(clsId, cls);
         if (!added) {

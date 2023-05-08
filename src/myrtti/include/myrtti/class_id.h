@@ -16,6 +16,7 @@
 #define RTTI_CLASS_ID_H
 
 #include <iosfwd>
+#include <utility>
 #include "crc/crc.hpp"
 
 namespace myrtti {
@@ -23,12 +24,23 @@ namespace myrtti {
 using CRC = crc::CRC64;
 
 struct class_id_t {
+
     constexpr class_id_t(const char* className) noexcept : value() {
         constexpr CRC engine;
         value = engine(className);
     }
+
+    template<typename ...Args>
+    constexpr class_id_t(const char* className, Args&&... d) noexcept : value() {
+        constexpr CRC engine;
+        value = engine(className, std::forward<Args>(d)...);
+    }
+
     bool operator==(const class_id_t& rhs) const noexcept {
         return value == rhs.value;
+    }
+    bool operator!=(const class_id_t& rhs) const noexcept {
+        return value != rhs.value;
     }
     bool operator<(const class_id_t& rhs) const noexcept {
         return value < rhs.value;
