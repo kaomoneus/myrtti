@@ -47,9 +47,9 @@ struct Object {
         reportCrossPtrs();
     }
 
-    static constexpr class_id_t class_id = class_id_t("Object");
+    static constexpr class_id_t class_id() { return {"Object"}; }
     static const ClassInfo* info() {
-        static ClassInfo v("Object", class_id);
+        static ClassInfo v("Object", class_id());
         return &v;
     }
 
@@ -85,7 +85,7 @@ struct Object {
     template<class T, std::enable_if_t<!std::is_pointer<T>::value, bool> = true>
     T& cast() {
         // TODO: Validate that T::info() takes longer time for polymorphic types.
-        auto found = this->crossPtrs.find(T::class_id);
+        auto found = this->crossPtrs.find(T::class_id());
         if (/*[[likely]]*/ found != end(this->crossPtrs)) {
             return *static_cast<T*>(found->second);
         }
@@ -96,7 +96,7 @@ struct Object {
     template<class T, std::enable_if_t<std::is_pointer<T>::value, bool> = true>
     T cast() {
         using _T = std::remove_pointer_t<T>;
-        auto found = this->crossPtrs.find(_T::class_id);
+        auto found = this->crossPtrs.find(_T::class_id());
         if (/*[[likely]]*/ found != end(this->crossPtrs)) {
             return static_cast<T>(found->second);
         }
@@ -105,7 +105,7 @@ struct Object {
 
     template<class T, std::enable_if_t<!std::is_pointer<T>::value, bool> = true>
     const T& cast() const {
-        auto found = this->crossPtrs.find(T::class_id);
+        auto found = this->crossPtrs.find(T::class_id());
         if (/*[[likely]]*/ found != end(this->crossPtrs)) {
             return *static_cast<T*>(found->second);
         }
@@ -116,7 +116,7 @@ struct Object {
     template<class T, std::enable_if_t<std::is_pointer<T>::value, bool> = true>
     const T cast() const {
         using _T = std::remove_pointer_t<T>;
-        auto found = this->crossPtrs.find(_T::class_id);
+        auto found = this->crossPtrs.find(_T::class_id());
         if (found != end(this->crossPtrs))
             return static_cast<T>(found->second);
         return nullptr;
@@ -133,9 +133,9 @@ protected:
     //    showing similar results for our case.
 
     #ifndef CROSS_PTRS_UNORDERED_MAP
-    std::map<class_id_t, void*> crossPtrs{{class_id, this}};
+    std::map<class_id_t, void*> crossPtrs{{class_id(), this}};
     #else
-    std::unordered_map<class_id_t, void*> crossPtrs{{class_id, this}};
+    std::unordered_map<class_id_t, void*> crossPtrs{{class_id(), this}};
     #endif
 };
 
@@ -157,7 +157,7 @@ struct RTTI : virtual Object {
     RTTI() {
         auto *superSelf = static_cast<Class*>(this);
         this->rtti = Class::info();
-        this->crossPtrs[Class::class_id] = superSelf;
+        this->crossPtrs[Class::class_id()] = superSelf;
         reportCrossPtrs();
     }
 };
@@ -172,27 +172,22 @@ using strip_type = std::remove_pointer_t<
 template<class B, class T>
 using is_base_of = std::is_base_of<strip_type<B>, strip_type<T>>;
 
-// this is a custom make_array implementation
-template<class ...Parents>
-static std::array<class_id_t, sizeof...(Parents)>
-mk_class_ids() {
-    return {Parents::class_id...};
-}
-
 // We use constexpr crc64 implementation, written by Sam Belliveau
 // https://gist.github.com/Sam-Belliveau/72ba4a8710324ce7a1ac1789d64ec831
 #define DEFINE_RTTI(cn, ...) \
-    static constexpr myrtti::class_id_t class_id = myrtti::class_id_t(#cn); \
-    static const ::myrtti::ClassInfo* info() { \
-        static myrtti::ClassInfo v(#cn, class_id, ::myrtti::mk_class_ids<__VA_ARGS__>()); \
-        return &v; \
+    static constexpr myrtti::class_id_t class_id() { return {#cn}; }                                   \
+    static const ::myrtti::ClassInfo* info() {                                                         \
+        static std::unique_ptr<myrtti::ClassInfo> p = myrtti::ClassInfo::create<cn, __VA_ARGS__>(#cn); \
+        return p.get(); \
     }
 
 #define MYRTTI_ESC(...) __VA_ARGS__
 
-#define with_rtti_root(name) \
-struct name : ::myrtti::RTTI<name> { \
-    DEFINE_RTTI(name, ::myrtti::Object); \
+#define with_rtti_root(class_or_struct, name) \
+struct name : public ::myrtti::RTTI<name> {          \
+    public:                                   \
+    DEFINE_RTTI(name, ::myrtti::Object);      \
+    MYRTTI_DEFAULT_ACCESS(class_or_struct)    \
 
 #define MYRTTI_DEFAULT_ACCESS(class_or_struct) MYRTTI_CAT(__MYRTTI_DEFAULT_ACCESS_, class_or_struct)
 #define __MYRTTI_DEFAULT_ACCESS_class private:
@@ -240,9 +235,9 @@ inline T& dyn_cast(Object& o) {return o.cast<T>();}
 
 
 template<class T>
-inline bool isa(const Object* o) { return T::class_id == o->rtti->getId();}
+inline bool isa(const Object* o) { return T::class_id() == o->rtti->getId();}
 template<class T>
-inline bool isa(const Object& o) { return T::class_id == o.rtti->getId();}
+inline bool isa(const Object& o) { return T::class_id() == o.rtti->getId();}
 
 } // namespace myrtti
 

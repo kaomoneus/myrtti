@@ -25,6 +25,17 @@ namespace myrtti {
 struct ClassInfo {
     const char* name;
 
+    template<class ThisClass, class ...Parents>
+    static inline std::unique_ptr<ClassInfo> create(const char* name) {
+        // Force all parent ClassInfos to be created.
+        (
+            [&] {
+                Parents::info();
+            } (), ...
+        );
+        return std::make_unique<ClassInfo>(name, ThisClass::class_id(), mk_class_ids<Parents...>());
+    }
+
     ClassInfo(const char* name, class_id_t classId) : name(name), id(classId) {
         Hierarchy::instance()->add(this, std::array<class_id_t, 0>());
     }
@@ -41,6 +52,13 @@ struct ClassInfo {
 
     class_id_t getId() const { return id; }
 private:
+
+    template<class ...Parents>
+    static std::array<class_id_t, sizeof...(Parents)>
+    mk_class_ids() {
+        return {Parents::class_id()...};
+    }
+
     class_id_t id;
 };
 }

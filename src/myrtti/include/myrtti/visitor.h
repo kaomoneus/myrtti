@@ -82,7 +82,7 @@ namespace myrtti
                     std::cout << "VISITOR: Registered handler for "
                               << Cls::info() << "\n";
                     visitorsMap.emplace(
-                        Cls::class_id,
+                        Cls::class_id(),
                         [=] (object_ref b) {
                             Cls& bb = b.template cast<Cls>();
                             return visitors(bb);
@@ -168,7 +168,7 @@ namespace myrtti
             std::cout << "STATIC VISITOR: Unwinding visit for class " << ClassT::info() << "\n";
 
             bool neverVisited = Hierarchy::instance()->destruct(
-                ClassT::class_id,
+                ClassT::class_id(),
                 [&] (const ClassInfo* cls) {
                     std::cout << std::hex
                     << "STATIC VISITOR:   Visiting class " << cls << "\n";
