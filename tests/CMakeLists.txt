@@ -20,10 +20,10 @@ if (MYRTTI_ENABLE_TESTS_BENCHMARK)
     add_subdirectory(benchmark)
 endif()
 
-find_package(GTEST)
+find_package(GTest)
 
 if (GTEST_FOUND)
-    message("Found Google Test.")
+    message("Found Google Test. Unittests are enabled.")
     add_subdirectory(unit)
 else()
     message("Google Test not found, unit tests will be disabled.")
