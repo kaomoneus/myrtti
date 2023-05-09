@@ -27,7 +27,7 @@ def emit_myrtti(name_base: str, depth: int, output: pathlib.Path):
             "#pragma once",
             "#include <myrtti.h>",
             "",
-            f"with_rtti_root({cls_name(0)})",
+            f"with_rtti_root(struct, {cls_name(0)})",
             "with_rtti_end();",
             "",
         ])
@@ -35,7 +35,7 @@ def emit_myrtti(name_base: str, depth: int, output: pathlib.Path):
         for i in range(1, depth):
             LOG.info(f"    myrtti:    writing {cls_name(i)}")
             _lines(f, [
-                f"with_rtti(struct, {cls_name(i)}, ({cls_name(i-1)}))",
+                f"with_rtti(struct, {cls_name(i)}, {cls_name(i-1)})",
                 "with_rtti_end();",
                 "",
             ])
@@ -44,9 +44,9 @@ def emit_myrtti(name_base: str, depth: int, output: pathlib.Path):
 def emit_ue(name_base: str, depth: int, output: pathlib.Path):
 
     def cls_name(d: int):
-        return f"AUnreal_{name_base}_{d}"
+        return f"UUnreal_{name_base}_{d}"
 
-    def emit_ue_class(name: str, parent: str, parent_header: str):
+    def emit_ue_class(name: str, parent: str, parent_header: str = None):
         header = output / f"{name}.h"
         cpp = output / f"{name}.cpp"
         with open(header, "w") as f:
@@ -55,7 +55,7 @@ def emit_ue(name_base: str, depth: int, output: pathlib.Path):
                     "#pragma once",
                     "",
                     "#include \"CoreMinimal.h\"",
-                    f"#include \"{parent_header}\"",
+                    f"#include \"{parent_header}\"" if parent_header else "",
                     f"#include \"{name}.generated.h\"",
                     "",
                     "UCLASS()",
@@ -76,11 +76,11 @@ def emit_ue(name_base: str, depth: int, output: pathlib.Path):
                 "",
                 f"{name}::{name}()",
                 "{",
-                "	PrimaryActorTick.bCanEverTick = false;",
+                "	// PrimaryActorTick.bCanEverTick = false;",
                 "}",
             ])
 
-    emit_ue_class(cls_name(0), "AActor", "GameFramework/Actor.h")
+    emit_ue_class(cls_name(0), "UObject")
 
     for i in range(1, depth):
         emit_ue_class(cls_name(i), cls_name(i-1), f"{cls_name(i-1)}.h")
