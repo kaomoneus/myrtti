@@ -70,19 +70,19 @@ int main() {
 
     VisitorStatic staticVisitor({
         {
-            Exception::class_id(), [] {
+            class_id<Exception>(), [] {
                 std::cout << "STATIC: Exception\n";
                 return true;
             }
         },
         {
-            ExceptionErrorOne::class_id(), [] {
+            class_id<ExceptionErrorOne>(), [] {
                 std::cout << "STATIC: ExceptionOne\n";
                 return true;
             }
         },
         {
-            ExceptionErrorTwo::class_id(), [] {
+            class_id<ExceptionErrorTwo>(), [] {
                 std::cout << "STATIC: ExceptionTwo\n";
                 return true;
             }

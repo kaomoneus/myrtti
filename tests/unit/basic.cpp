@@ -31,7 +31,7 @@ TEST(Basic, SingleParent) {
     const TestRoot *pConst = &instance;
 
     EXPECT_STREQ(p->rtti->name, "Final");
-    EXPECT_EQ(p->rtti->getId(), Final::class_id());
+    EXPECT_EQ(p->rtti->getId(), myrtti::class_id<Final>());
 }
 
 TEST(Basic, DynCast) {
@@ -110,9 +110,9 @@ TEST(Basic, ManyParents) {
 
     auto *h = myrtti::Hierarchy::instance();
 
-    EXPECT_STREQ(h->getClassInfo(Final::class_id())->name, "Final");
-    EXPECT_TRUE(myrtti::Hierarchy::instance()->isParent(Final::class_id(), TestRoot::class_id()));
-    EXPECT_TRUE(myrtti::Hierarchy::instance()->isParent(Final::class_id(), TestRoot2::class_id()));
+    EXPECT_STREQ(h->getClassInfo(myrtti::class_id<Final>())->name, "Final");
+    EXPECT_TRUE(myrtti::Hierarchy::instance()->isParent(myrtti::class_id<Final>(), myrtti::class_id<TestRoot>()));
+    EXPECT_TRUE(myrtti::Hierarchy::instance()->isParent(myrtti::class_id<Final>(), myrtti::class_id<TestRoot2>()));
 }
 
 TEST(Basic, VirtualPrents) {
@@ -178,23 +178,23 @@ TEST(Basic, VirtualPrents) {
     Z::info();
 
     // TODO: h->isParent<Z, C>();
-    EXPECT_TRUE(h->isParent(Z::class_id(), C::class_id()));
-    EXPECT_TRUE(h->isParent(Z::class_id(), A::class_id()));
-    EXPECT_TRUE(h->isParent(Z::class_id(), B::class_id()));
-    EXPECT_TRUE(h->isParent(X::class_id(), C::class_id()));
-    EXPECT_TRUE(h->isParent(X::class_id(), A::class_id()));
-    EXPECT_TRUE(h->isParent(X::class_id(), B::class_id()));
+    EXPECT_TRUE(h->isParent(myrtti::class_id<Z>(), myrtti::class_id<C>()));
+    EXPECT_TRUE(h->isParent(myrtti::class_id<Z>(), myrtti::class_id<A>()));
+    EXPECT_TRUE(h->isParent(myrtti::class_id<Z>(), myrtti::class_id<B>()));
+    EXPECT_TRUE(h->isParent(myrtti::class_id<X>(), myrtti::class_id<C>()));
+    EXPECT_TRUE(h->isParent(myrtti::class_id<X>(), myrtti::class_id<A>()));
+    EXPECT_TRUE(h->isParent(myrtti::class_id<X>(), myrtti::class_id<B>()));
 
     std::ostringstream windupWalk;
     std::ostringstream unwindWalk;
 
     // TODO: h->windup<Z>([...]{...});
-    h->windup(Z::class_id(), [&](const myrtti::ClassInfo *cls) {
+    h->windup(myrtti::class_id<Z>(), [&](const myrtti::ClassInfo *cls) {
         if (cls != myrtti::Object::info() and cls != Base::info())
             windupWalk << cls->name;
         return true;
     });
-    h->unwind(Z::class_id(), [&](const myrtti::ClassInfo *cls) {
+    h->unwind(myrtti::class_id<Z>(), [&](const myrtti::ClassInfo *cls) {
         if (cls != myrtti::Object::info() and cls != Base::info())
             unwindWalk << cls->name;
         return true;

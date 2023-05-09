@@ -17,6 +17,7 @@
 
 #include "myrtti/class_id.h"
 #include "myrtti/hierarchy.h"
+#include "myrtti/class_id_macros.h"
 
 #include <array>
 
@@ -33,7 +34,7 @@ struct ClassInfo {
                 Parents::info();
             } (), ...
         );
-        return std::make_unique<ClassInfo>(name, ThisClass::class_id(), mk_class_ids<Parents...>());
+        return std::make_unique<ClassInfo>(name, ThisClass::MYRTTI_CLASSID, mk_class_ids<Parents...>());
     }
 
     ClassInfo(const char* name, class_id_t classId) : name(name), id(classId) {
@@ -56,7 +57,7 @@ private:
     template<class ...Parents>
     static std::array<class_id_t, sizeof...(Parents)>
     mk_class_ids() {
-        return {Parents::class_id()...};
+        return {Parents::MYRTTI_CLASSID...};
     }
 
     class_id_t id;

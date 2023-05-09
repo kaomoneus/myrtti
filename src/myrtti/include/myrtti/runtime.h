@@ -18,6 +18,7 @@
 // Uncomment if you want to use std::unordered_map for crossPtrs
 // #define CROSS_PTRS_UNORDERED_MAP
 
+#include "utils/macros/macros_common.h"
 #include "utils/macros/va_arg_prefix.h"
 
 #include "myrtti/class_id.h"
@@ -38,15 +39,6 @@
 
 #include <type_traits>
 
-#ifdef __clang__
-#define MYRTTI_INLINE inline __attribute__((always_inline))
-#elif defined(_MSC_VER)
-#define MYRTTI_INLINE __forceinline
-#else
-#warning "Unable to determine compiler, class_id() might not be inline and thus will be slower then planned."
-#define MYRTTI_INLINE inline
-#endif
-
 namespace myrtti
 {
 struct Object {
@@ -56,12 +48,10 @@ struct Object {
         reportCrossPtrs();
     }
 
-    static inline constexpr class_id_t class_id() {
-        constexpr myrtti::class_id_t myId{"myrtti::Object"};
-        return myId;
-    }
+    MYRTTI_DEFINE_CLASSID("myrtti::Object")
+
     static const ClassInfo* info() {
-        static ClassInfo v("myrtti::Object", class_id());
+        static ClassInfo v("myrtti::Object", MYRTTI_CLASSID);
         return &v;
     }
 
@@ -117,7 +107,7 @@ struct Object {
     template<class T, std::enable_if_t<!std::is_pointer_v<T>, bool> = true>
     MYRTTI_INLINE const T& cast() const {
         using TT = std::remove_reference_t<T>;
-        auto found = this->crossPtrs.find(TT ::class_id());
+        auto found = this->crossPtrs.find(TT::MYRTTI_CLASSID);
         if (/*[[likely]]*/ found != end(this->crossPtrs)) {
             return *static_cast<TT*>(found->second);
         }
@@ -128,7 +118,7 @@ struct Object {
     template<class T, std::enable_if_t<std::is_pointer_v<T>, bool> = true>
     MYRTTI_INLINE T cast() const {
         using TT = std::remove_pointer_t<T>;
-        auto found = this->crossPtrs.find(TT::class_id());
+        auto found = this->crossPtrs.find(TT::MYRTTI_CLASSID);
         if (found != end(this->crossPtrs))
             return static_cast<T>(found->second);
         return nullptr;
@@ -148,9 +138,9 @@ protected:
     //    showing similar results for our case.
 
     #ifndef CROSS_PTRS_UNORDERED_MAP
-    std::map<class_id_t, void*> crossPtrs{{class_id(), this}};
+    std::map<class_id_t, void*> crossPtrs{{MYRTTI_CLASSID, this}};
     #else
-    std::unordered_map<class_id_t, void*> crossPtrs{{class_id(), this}};
+    std::unordered_map<class_id_t, void*> crossPtrs{{MYRTTI_CLASSID, this}};
     #endif
 };
 
@@ -172,7 +162,7 @@ struct RTTI : virtual Object {
     RTTI() {
         auto *superSelf = static_cast<Class*>(this);
         this->rtti = Class::info();
-        this->crossPtrs[Class::class_id()] = superSelf;
+        this->crossPtrs[Class::MYRTTI_CLASSID] = superSelf;
         reportCrossPtrs();
     }
 };
@@ -189,17 +179,12 @@ using is_base_of = std::is_base_of<strip_type<B>, strip_type<T>>;
 
 #define MYRTTI_UNIQUE_NAME(cn) #cn, __FILE__, __LINE__
 
-#define DEFINE_RTTI(cn, ...)                                      \
-    static MYRTTI_INLINE constexpr myrtti::class_id_t class_id() {              \
-        constexpr myrtti::class_id_t myId{MYRTTI_UNIQUE_NAME(cn)}; \
-        return myId;                                              \
-    }                                                             \
+#define DEFINE_RTTI(cn, ...)                                                                           \
+    MYRTTI_DEFINE_CLASSID(MYRTTI_UNIQUE_NAME(cn))                                                      \
     static const ::myrtti::ClassInfo* info() {                                                         \
         static std::unique_ptr<myrtti::ClassInfo> p = myrtti::ClassInfo::create<cn, __VA_ARGS__>(#cn); \
-        return p.get(); \
+        return p.get();                                                                                \
     }
-
-#define MYRTTI_ESC(...) __VA_ARGS__
 
 #define with_rtti_root(class_or_struct, name) \
 struct name : public ::myrtti::RTTI<name> {   \
@@ -245,6 +230,11 @@ struct name : public ::myrtti::RTTI<name> {   \
 
 #define with_rtti_end() }
 
+template <class T>
+constexpr class_id_t class_id() {
+    return T::MYRTTI_CLASSID;
+}
+
 template<class T, std::enable_if_t<std::is_pointer<T>::value, bool> = true>
 MYRTTI_INLINE T dyn_cast(Object* o) {return o->cast<T>();}
 
@@ -252,9 +242,9 @@ template<class T, std::enable_if_t<!std::is_pointer<T>::value, bool> = true>
 MYRTTI_INLINE T& dyn_cast(Object& o) {return o.cast<T>();}
 
 template<class T>
-MYRTTI_INLINE bool isa(const Object* o) { return T::class_id() == o->rtti->getId();}
+MYRTTI_INLINE bool isa(const Object* o) { return T::MYRTTI_CLASSID == o->rtti->getId();}
 template<class T>
-MYRTTI_INLINE bool isa(const Object& o) { return T::class_id() == o.rtti->getId();}
+MYRTTI_INLINE bool isa(const Object& o) { return T::MYRTTI_CLASSID == o.rtti->getId();}
 
 //
 // try_static_cast
@@ -262,12 +252,12 @@ MYRTTI_INLINE bool isa(const Object& o) { return T::class_id() == o.rtti->getId(
 template<class T, class From>
 MYRTTI_INLINE T try_static_cast(From* from) {
     static_assert(std::is_pointer_v<T> && "T must be a pointer type.");
-    static_assert(From::class_id() != Object::class_id() && "Unable static_cast from virtual Object class.");
+    static_assert(From::MYRTTI_CLASSID != Object::MYRTTI_CLASSID && "Unable static_cast from virtual Object class.");
 
     // TODO: for debug modes also add verification whether there is straight static (non-virtual) inheritance line
     //   between From and To.
     using TT = std::remove_pointer_t<T>;
-    if (from->crossPtrs.count(TT::class_id()))
+    if (from->crossPtrs.count(TT::MYRTTI_CLASSID))
         return static_cast<T>(from);
     return nullptr;
 }
