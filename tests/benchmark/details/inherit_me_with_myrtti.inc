@@ -15,17 +15,16 @@
 #ifndef WITHOUT_MYRTTI
 
 #define ROOT(newClass) \
-    with_rtti_root(newClass) \
-    with_rtti_end()
+    with_rtti_root(struct, newClass) \
+    with_rtti_end();
 
 #define INHERIT_ME(baseClass, newClass) \
-    with_rtti(struct, newClass, (baseClass)) \
-    with_rtti_end()
+    with_rtti(struct, newClass, baseClass) \
+    with_rtti_end();
 
 #define INHERIT_ME_MULTI(bases, newClass) \
     with_rtti_parents(struct, newClass, bases) \
-    with_rtti_end()
-
+    with_rtti_end();
 #else
 
 #define ROOT(newClass) struct newClass {}
