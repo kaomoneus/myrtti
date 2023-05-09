@@ -38,8 +38,17 @@
 
 #include <type_traits>
 
-namespace myrtti {
+#ifdef __clang__
+#define MYRTTI_INLINE inline __attribute__((always_inline))
+#elif defined(_MSC_VER)
+#define MYRTTI_INLINE __forceinline
+#else
+#warning "Unable to determine compiler, class_id() might not be inline and thus will be slower then planned."
+#define MYRTTI_INLINE inline
+#endif
 
+namespace myrtti
+{
 struct Object {
     virtual ~Object() = default;
 
@@ -47,7 +56,10 @@ struct Object {
         reportCrossPtrs();
     }
 
-    static constexpr class_id_t class_id() { return {"myrtti::Object"}; }
+    static inline constexpr class_id_t class_id() {
+        constexpr myrtti::class_id_t myId{"myrtti::Object"};
+        return myId;
+    }
     static const ClassInfo* info() {
         static ClassInfo v("myrtti::Object", class_id());
         return &v;
@@ -79,7 +91,7 @@ struct Object {
     //
 
     template<class T, std::enable_if_t<!std::is_pointer_v<T>, bool> = true>
-    T& cast() {
+    MYRTTI_INLINE T& cast() {
         using TT = std::add_const_t<T&>;
         return const_cast<T&>(
             const_cast<const Object*>(this)->cast<TT>()
@@ -87,7 +99,7 @@ struct Object {
     }
 
     template<class T, std::enable_if_t<std::is_pointer_v<T>, bool> = true>
-    T cast() {
+    MYRTTI_INLINE T cast() {
         using TT = std::add_const_t<T>;
         return const_cast<T>(
             const_cast<const Object*>(this)->cast<TT>()
@@ -103,7 +115,7 @@ struct Object {
     //   but ret_type will be quite complicated as well.
     //   Keeping in mind, that we would had two `if constexpr` branches, we won't make resulting code any smaller.
     template<class T, std::enable_if_t<!std::is_pointer_v<T>, bool> = true>
-    const T& cast() const {
+    MYRTTI_INLINE const T& cast() const {
         using TT = std::remove_reference_t<T>;
         auto found = this->crossPtrs.find(TT ::class_id());
         if (/*[[likely]]*/ found != end(this->crossPtrs)) {
@@ -114,7 +126,7 @@ struct Object {
     }
 
     template<class T, std::enable_if_t<std::is_pointer_v<T>, bool> = true>
-    T cast() const {
+    MYRTTI_INLINE T cast() const {
         using TT = std::remove_pointer_t<T>;
         auto found = this->crossPtrs.find(TT::class_id());
         if (found != end(this->crossPtrs))
@@ -177,8 +189,11 @@ using is_base_of = std::is_base_of<strip_type<B>, strip_type<T>>;
 
 #define MYRTTI_UNIQUE_NAME(cn) #cn, __FILE__, __LINE__
 
-#define DEFINE_RTTI(cn, ...) \
-    static constexpr myrtti::class_id_t class_id() { return {MYRTTI_UNIQUE_NAME(cn)}; }                       \
+#define DEFINE_RTTI(cn, ...)                                      \
+    static MYRTTI_INLINE constexpr myrtti::class_id_t class_id() {              \
+        constexpr myrtti::class_id_t myId{MYRTTI_UNIQUE_NAME(cn)}; \
+        return myId;                                              \
+    }                                                             \
     static const ::myrtti::ClassInfo* info() {                                                         \
         static std::unique_ptr<myrtti::ClassInfo> p = myrtti::ClassInfo::create<cn, __VA_ARGS__>(#cn); \
         return p.get(); \
@@ -187,7 +202,7 @@ using is_base_of = std::is_base_of<strip_type<B>, strip_type<T>>;
 #define MYRTTI_ESC(...) __VA_ARGS__
 
 #define with_rtti_root(class_or_struct, name) \
-struct name : public ::myrtti::RTTI<name> {          \
+struct name : public ::myrtti::RTTI<name> {   \
     public:                                   \
     DEFINE_RTTI(name, ::myrtti::Object);      \
     MYRTTI_DEFAULT_ACCESS(class_or_struct)    \
@@ -231,21 +246,21 @@ struct name : public ::myrtti::RTTI<name> {          \
 #define with_rtti_end() }
 
 template<class T, std::enable_if_t<std::is_pointer<T>::value, bool> = true>
-inline T dyn_cast(Object* o) {return o->cast<T>();}
+MYRTTI_INLINE T dyn_cast(Object* o) {return o->cast<T>();}
 
 template<class T, std::enable_if_t<!std::is_pointer<T>::value, bool> = true>
-inline T& dyn_cast(Object& o) {return o.cast<T>();}
+MYRTTI_INLINE T& dyn_cast(Object& o) {return o.cast<T>();}
 
 template<class T>
-inline bool isa(const Object* o) { return T::class_id() == o->rtti->getId();}
+MYRTTI_INLINE bool isa(const Object* o) { return T::class_id() == o->rtti->getId();}
 template<class T>
-inline bool isa(const Object& o) { return T::class_id() == o.rtti->getId();}
+MYRTTI_INLINE bool isa(const Object& o) { return T::class_id() == o.rtti->getId();}
 
 //
 // try_static_cast
 //
 template<class T, class From>
-T try_static_cast(From* from) {
+MYRTTI_INLINE T try_static_cast(From* from) {
     static_assert(std::is_pointer_v<T> && "T must be a pointer type.");
     static_assert(From::class_id() != Object::class_id() && "Unable static_cast from virtual Object class.");
 
