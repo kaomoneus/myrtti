@@ -6,24 +6,24 @@
 
 #include "CoreMinimal.h"
 #include "GameFramework/Actor.h"
-#include "MyRTTICastPluginActor.generated.h"
+#include "MyRTTITryStaticPluginActor.generated.h"
 
-namespace myrtti_AMyRTTICastPluginActor
+namespace myrtti_AMyRTTITryStaticPluginActor
 {
 	struct Context;
 }
 
 UCLASS()
-class MYRTTIBENCHMARKACTORS_API AMyRTTICastPluginActor : public AActor
+class MYRTTIBENCHMARKACTORS_API AMyRTTITryStaticPluginActor : public AActor
 {
 	GENERATED_BODY()
 
-	myrtti_AMyRTTICastPluginActor::Context* ctx;
-	
+	myrtti_AMyRTTITryStaticPluginActor::Context* ctx;
+
 public:
 	// Sets default values for this actor's properties
-	AMyRTTICastPluginActor();
-	~AMyRTTICastPluginActor() override;
+	AMyRTTITryStaticPluginActor();
+	~AMyRTTITryStaticPluginActor() override;
 
 protected:
 	// Called when the game starts or when spawned

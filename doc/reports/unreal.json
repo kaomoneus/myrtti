@@ -1,63 +1,111 @@
 {
   "context": {
-    "date": "05/10/23 11:30:44",
+    "date": "2023-05-10T14:35:07+04:00",
     "host_name": "123123",
-    "executable": "UEBenchmarkProject.exe",
+    "executable": "Unreal Engine 4.27",
     "num_cpus": 8,
-    "mhz_per_cpu": 1498,
+    "mhz_per_cpu": 2600,
     "cpu_scaling_enabled": false,
     "caches": [
       {
         "type": "Data",
         "level": 1,
-        "size": 49152000,
-        "num_sharing": 2
+        "size": 32768,
+        "num_sharing": 0
       },
       {
         "type": "Instruction",
         "level": 1,
-        "size": 32768000,
-        "num_sharing": 2
+        "size": 32768,
+        "num_sharing": 0
       },
       {
         "type": "Unified",
         "level": 2,
-        "size": 1310720000,
+        "size": 262144,
         "num_sharing": 2
       },
       {
         "type": "Unified",
         "level": 3,
-        "size": 8388608000,
-        "num_sharing": 8
+        "size": 6291456,
+        "num_sharing": 0
       }
     ],
-    "load_avg": [],
+    "load_avg": [2.86865,3.42969,3.42871],
     "library_build_type": "release"
   },
   "benchmarks": [
     {
-      "name": "FromBase UnrealEngine",
-      "run_name": "FromBase_UnrealEngine",
+      "name": "StandaloneRun/FromBase_Cast_Unreal",
+      "run_name": "StandaloneRun/FromBase_Cast_Unreal",
       "run_type": "iteration",
       "repetitions": 0,
       "repetition_index": 0,
       "threads": 1,
       "iterations": 600,
-      "real_time": 16.82,
-      "cpu_time": 16.23,
+      "real_time": 10.451,
+      "cpu_time": 10.451,
       "time_unit": "ms"
     },
     {
-      "name": "FromBase MyRTTI::cast",
-      "run_name": "FromBase_MyRTTI_cast",
+      "name": "StandaloneRun/FromBase_CastNegative_Unreal",
+      "run_name": "StandaloneRun/FromBase_CastNegative_Unreal",
       "run_type": "iteration",
       "repetitions": 0,
       "repetition_index": 0,
       "threads": 1,
       "iterations": 600,
-      "real_time": 38.11,
-      "cpu_time": 37.16,
+      "real_time": 44.6,
+      "cpu_time": 44.6,
+      "time_unit": "ms"
+    },
+    {
+      "name": "StandaloneRun/FromBase_Cast_MyRTTI",
+      "run_name": "StandaloneRun/FromBase_Cast_MyRTTI",
+      "run_type": "iteration",
+      "repetitions": 0,
+      "repetition_index": 0,
+      "threads": 1,
+      "iterations": 600,
+      "real_time": 33.786,
+      "cpu_time": 33.786,
+      "time_unit": "ms"
+    },
+    {
+      "name": "StandaloneRun/FromBase_CastNegative_MyRTTI",
+      "run_name": "StandaloneRun/FromBase_CastNegative_MyRTTI",
+      "run_type": "iteration",
+      "repetitions": 0,
+      "repetition_index": 0,
+      "threads": 1,
+      "iterations": 600,
+      "real_time": 18.666,
+      "cpu_time": 18.666,
+      "time_unit": "ms"
+    },
+    {
+      "name": "StandaloneRun/FromBase_Cast_MyRTTI_TryStatic",
+      "run_name": "StandaloneRun/FromBase_Cast_MyRTTI_TryStatic",
+      "run_type": "iteration",
+      "repetitions": 0,
+      "repetition_index": 0,
+      "threads": 1,
+      "iterations": 600,
+      "real_time": 12.685,
+      "cpu_time": 12.685,
+      "time_unit": "ms"
+    },
+    {
+      "name": "StandaloneRun/FromBase_CastNegative_MyRTTI_TryStatic",
+      "run_name": "StandaloneRun/FromBase_CastNegative_MyRTTI_TryStatic",
+      "run_type": "iteration",
+      "repetitions": 0,
+      "repetition_index": 0,
+      "threads": 1,
+      "iterations": 600,
+      "real_time": 11.748,
+      "cpu_time": 11.748,
       "time_unit": "ms"
     }
   ]

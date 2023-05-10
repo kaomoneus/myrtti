@@ -1,0 +1,7 @@
+"Event Name","Inc Time (MS)","Inc Time (%)","Exc Time (MS)","Exc Time (%)","Calls","None",
+"UECastNegPluginActor/Game/BenchmarkLevel.BenchmarkLevel.PersistentLevel.UECastNegPluginActor","44.600 ms","33.8 %","0.000 ms","0.0 %","1.0",
+"MyRTTICastPluginActor/Game/BenchmarkLevel.BenchmarkLevel.PersistentLevel.MyRTTICastPluginActor","33.786 ms","25.6 %","0.000 ms","0.0 %","1.0",
+"MyRTTICastNegPluginActor/Game/BenchmarkLevel.BenchmarkLevel.PersistentLevel.MyRTTICastNegPluginActor","18.666 ms","14.1 %","0.000 ms","0.0 %","1.0",
+"MyRTTITryStaticPluginActor/Game/BenchmarkLevel.BenchmarkLevel.PersistentLevel.MyRTTITryStaticPluginActor","12.685 ms","9.6 %","0.000 ms","0.0 %","1.0",
+"MyRTTITryStaticNegPluginActor/Game/BenchmarkLevel.BenchmarkLevel.PersistentLevel.MyRTTITryStaticNegPluginActor","11.748 ms","8.9 %","0.000 ms","0.0 %","1.0",
+"UECastPluginActor/Game/BenchmarkLevel.BenchmarkLevel.PersistentLevel.UECastPluginActor","10.451 ms","7.9 %","0.000 ms","0.0 %","1.0",

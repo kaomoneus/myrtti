@@ -8,9 +8,9 @@
 #include "GameFramework/Actor.h"
 #include "UECastPluginActor.generated.h"
 
-namespace myrtti_uebench
+namespace myrtti_AUECastPluginActor
 {
-	struct UEActorContext;
+	struct Context;
 }
 
 UCLASS()
@@ -18,7 +18,7 @@ class MYRTTIBENCHMARKACTORS_API AUECastPluginActor : public AActor
 {
 	GENERATED_BODY()
 
-	myrtti_uebench::UEActorContext* ctx;
+	myrtti_AUECastPluginActor::Context* ctx;
 	
 public:
 	// Sets default values for this actor's properties

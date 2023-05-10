@@ -1,11 +1,11 @@
 // Fill out your copyright notice in the Description page of Project Settings.
 
-#include "MyRTTICastPluginActor.h"
+#include "MyRTTICastNegPluginActor.h"
 
 #include "myrtti_utils.h"
 #include "UEBenchmarkHierarchy/myrtti_Deep.h"
 
-namespace myrtti_AMyRTTICastPluginActor
+namespace myrtti_AMyRTTICastNegPluginActor
 {
 	struct Context
 	{
@@ -17,34 +17,34 @@ namespace myrtti_AMyRTTICastPluginActor
 }
 
 // Sets default values
-AMyRTTICastPluginActor::AMyRTTICastPluginActor()
+AMyRTTICastNegPluginActor::AMyRTTICastNegPluginActor()
 {
 	// Set this actor to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
 	PrimaryActorTick.bCanEverTick = true;
-	ctx = new myrtti_AMyRTTICastPluginActor::Context();
+	ctx = new myrtti_AMyRTTICastNegPluginActor::Context();
 }
 
-AMyRTTICastPluginActor::~AMyRTTICastPluginActor()
+AMyRTTICastNegPluginActor::~AMyRTTICastNegPluginActor()
 {
 	delete ctx;
 }
 
 
 // Called when the game starts or when spawned
-void AMyRTTICastPluginActor::BeginPlay()
+void AMyRTTICastNegPluginActor::BeginPlay()
 {
 	Super::BeginPlay();
 }
 
 // Called every frame
-void AMyRTTICastPluginActor::Tick(float DeltaTime)
+void AMyRTTICastNegPluginActor::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
 
 	for (int i = 0; i!=CASTS_PER_TICK;++i)
 	{
-		auto *res = ctx->basePtr->cast<MyRTTI_Deep_19*>();
-		check(res != nullptr);
+		auto *res = ctx->basePtr->cast<MyRTTI_Deep_1_v2*>();
+		check(res == nullptr);
 		DoNotOptimize(res);
 	}
 }

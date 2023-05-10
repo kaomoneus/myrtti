@@ -7,6 +7,9 @@ with_rtti_end();
 with_rtti(struct, MyRTTI_Deep_1, MyRTTI_Deep_0)
 with_rtti_end();
 
+with_rtti(struct, MyRTTI_Deep_1_v2, MyRTTI_Deep_0)
+with_rtti_end();
+
 with_rtti(struct, MyRTTI_Deep_2, MyRTTI_Deep_1)
 with_rtti_end();
 
