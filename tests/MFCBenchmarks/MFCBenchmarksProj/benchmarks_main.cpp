@@ -21,8 +21,9 @@
 
 constexpr int numIterations = 2500000;
 
-COMPARE_CASTS_BENCHMARK(FromBase, DeepTest19, this->basePtr)
-COMPARE_CASTS_BENCHMARK(ToBase, Root, this->finalPtr)
+COMPARE_CASTS_BENCHMARK(FromBase_Cast, DeepTest19, this->basePtr, true)
+COMPARE_CASTS_BENCHMARK(ToBase_Cast, Root, this->finalPtr, true)
+COMPARE_CASTS_BENCHMARK(FromBase_CastNegative, DeepTestWrong, this->basePtr, false)
 
 // Run the benchmark
 BENCHMARK_MAIN();

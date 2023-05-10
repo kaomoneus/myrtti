@@ -58,8 +58,9 @@ namespace _mfc {                       \
     MFC_CLASS(Name, Parent)        \
 
 
-#define DEEP(NameBase)               \
-    CLASS_PAIR(NameBase ## 0, Root)      \
+#define DEEP(NameBase)                       \
+    CLASS_PAIR(NameBase ## 0, Root)          \
+    CLASS_PAIR(NameBase ## Wrong, Root)      \
     CLASS_PAIR(NameBase ## 1, NameBase ## 0) \
     CLASS_PAIR(NameBase ## 2, NameBase ## 1) \
     CLASS_PAIR(NameBase ## 3, NameBase ## 2) \
@@ -83,7 +84,7 @@ namespace _mfc {                       \
 
 DEEP(DeepTest)
 
-template<typename BaseT, typename FinalT>
+template<typename BaseT, typename FinalT, typename FinalWrongT>
 class InheritanceFixture : public benchmark::Fixture
 {
 public:
@@ -100,6 +101,7 @@ public:
     }
 
     FinalT instance;
+    FinalWrongT instanceWrong;
 
     FinalT* finalPtr;
     BaseT* basePtr;
@@ -112,30 +114,36 @@ constexpr int NUM_OPERATIONS = 1000000;
 // Here, make it noinline
 
 #define MYRTTI_CAST(To, From) From->cast<To*>()
+#define MYRTTI_TRY_STATIC_CAST(To, From) myrtti::try_static_cast<To*>(From)
 
-#define __MYRTTI_BENCHMARK(name, Fixture, DYN_CAST, To, From) \
+#define __MYRTTI_BENCHMARK(name, Fixture, DYN_CAST, To, From, Res) \
     BENCHMARK_F(Fixture, name)(benchmark::State& state) \
     { \
         for (auto _ : state) { \
             for (int i = 0; i!=NUM_OPERATIONS;++i) { \
                 auto *r = DYN_CAST(To, From); \
-                if (!r) abort(); \
+                if ((r != nullptr) != Res) abort(); \
                 benchmark::DoNotOptimize(r); \
             } \
         } \
     } \
 
-using  MyRttiFixture = InheritanceFixture<_myrtti::Root, _myrtti::DeepTest19>;
-using  MFCFixture = InheritanceFixture<_mfc::Root, _mfc::DeepTest19>;
+using  MyRttiFixture = InheritanceFixture<_myrtti::Root, _myrtti::DeepTest19, _myrtti::DeepTestWrong>;
+using  MFCFixture = InheritanceFixture<_mfc::Root, _mfc::DeepTest19, _mfc::DeepTestWrong>;
 
-#define MYRTTI_CAST_BENCHMARK(name, To, From) \
-    __MYRTTI_BENCHMARK(name, MyRttiFixture, MYRTTI_CAST, To, From);
+#define MYRTTI_CAST_BENCHMARK(name, To, From, Res) \
+    __MYRTTI_BENCHMARK(name, MyRttiFixture, MYRTTI_CAST, To, From, Res);
 
-#define LEGACY_CAST_BENCHMARK(name, To, From) \
-    __MYRTTI_BENCHMARK(name, MFCFixture, DYNAMIC_DOWNCAST, To, From);
+#define MYRTTI_TRY_STATIC_CAST_BENCHMARK(name, To, From, Res) \
+    __MYRTTI_BENCHMARK(name, MyRttiFixture, MYRTTI_TRY_STATIC_CAST, To, From, Res);
 
-#define COMPARE_CASTS_BENCHMARK(namePrefix, To, From) \
-    LEGACY_CAST_BENCHMARK(namePrefix##_mfc, _mfc::To, From); \
-    MYRTTI_CAST_BENCHMARK(namePrefix##_myrtti, _myrtti::To, From); \
+
+#define LEGACY_CAST_BENCHMARK(name, To, From, Res) \
+    __MYRTTI_BENCHMARK(name, MFCFixture, DYNAMIC_DOWNCAST, To, From, Res);
+
+#define COMPARE_CASTS_BENCHMARK(namePrefix, To, From, Res) \
+    LEGACY_CAST_BENCHMARK(namePrefix##_mfc, _mfc::To, From, Res); \
+    MYRTTI_CAST_BENCHMARK(namePrefix##_myrtti, _myrtti::To, From, Res); \
+    MYRTTI_TRY_STATIC_CAST_BENCHMARK(namePrefix##_myrttiTryStatic, _myrtti::To, From, Res); \
 
 #endif // MYRTTI_BENCHMARKS_COMMON
