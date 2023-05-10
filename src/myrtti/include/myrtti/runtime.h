@@ -56,7 +56,7 @@ struct Object {
         reportCrossPtrs();
     }
 
-    static inline constexpr class_id_t class_id() {
+    static MYRTTI_INLINE constexpr class_id_t class_id() {
         constexpr myrtti::class_id_t myId{"myrtti::Object"};
         return myId;
     }
@@ -189,14 +189,14 @@ using is_base_of = std::is_base_of<strip_type<B>, strip_type<T>>;
 
 #define MYRTTI_UNIQUE_NAME(cn) #cn, __FILE__, __LINE__
 
-#define DEFINE_RTTI(cn, ...)                                      \
-    static MYRTTI_INLINE constexpr myrtti::class_id_t class_id() {              \
+#define DEFINE_RTTI(cn, ...)                                       \
+    static MYRTTI_INLINE constexpr myrtti::class_id_t class_id() { \
         constexpr myrtti::class_id_t myId{MYRTTI_UNIQUE_NAME(cn)}; \
-        return myId;                                              \
-    }                                                             \
+        return myId;                                               \
+    }                                                              \
     static const ::myrtti::ClassInfo* info() {                                                         \
         static std::unique_ptr<myrtti::ClassInfo> p = myrtti::ClassInfo::create<cn, __VA_ARGS__>(#cn); \
-        return p.get(); \
+        return p.get();                                                                                \
     }
 
 #define MYRTTI_ESC(...) __VA_ARGS__

@@ -51,12 +51,3 @@ BENCHMARK_F(InheritanceFixture, rttiCosts_myrttiName)(benchmark::State& state)
         }
     }
 }
-
-BENCHMARK_F(InheritanceFixture, rttiCosts_myrttiClassId)(benchmark::State& state)
-{
-    for (auto _ : state) {
-        for (int i = 0; i!=NUM_OPERATIONS;++i) {
-            benchmark::DoNotOptimize(WideFinal::class_id);
-        }
-    }
-}

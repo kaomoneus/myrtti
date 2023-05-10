@@ -20,6 +20,13 @@
 #include <unordered_map>
 #include <utility>
 
+#if 0
+#define TRACE std::cout
+#else
+#include "utils/nullout.h"
+#define TRACE myrtti::nullout_t::instance()
+#endif
+
 namespace myrtti
 {
     template<bool istrue, class TrueT, class FalseT>
@@ -78,8 +85,7 @@ namespace myrtti
                         "Please use type without 'const' qualifier while using"
                         " mutable visitor"
                     );
-
-                    std::cout << "VISITOR: Registered handler for "
+                    TRACE << "VISITOR: Registered handler for "
                               << Cls::info() << "\n";
                     visitorsMap.emplace(
                         Cls::class_id(),
@@ -93,25 +99,25 @@ namespace myrtti
         }
 
     bool visit(object_ref b) {
-        std::cout << "VISITOR: Unwinding visit for class "
+        TRACE << "VISITOR: Unwinding visit for class "
                   << b.rtti->name << "\n";
 
         bool neverVisited = Hierarchy::instance()->unwind(
             b.rtti->getId(),
             [&](const ClassInfo *cls) {
-                std::cout << std::hex
+                TRACE << std::hex
                 << "VISITOR:   Visiting class " << cls << "\n";
                 auto found = visitorsMap.find(cls->getId());
 
                 if (found != end(visitorsMap)) {
-                    std::cout << "VISITOR:     found handler...\n";
+                    TRACE << "VISITOR:     found handler...\n";
 
                     bool visitHandled = found->second(b);
                     // If visit was successfull, stop going through
                     // hierarchy and exit.
                     return !visitHandled;
                 }
-                std::cout << "VISITOR:     handler not found.\n";
+                TRACE << "VISITOR:     handler not found.\n";
 
                 return true;
             }
@@ -165,24 +171,24 @@ namespace myrtti
 
         template<class ClassT>
         bool visit() {
-            std::cout << "STATIC VISITOR: Unwinding visit for class " << ClassT::info() << "\n";
+            TRACE << "STATIC VISITOR: Unwinding visit for class " << ClassT::info() << "\n";
 
             bool neverVisited = Hierarchy::instance()->unwind(
                 ClassT::class_id(),
                 [&](const ClassInfo *cls) {
-                    std::cout << std::hex
+                    TRACE << std::hex
                     << "STATIC VISITOR:   Visiting class " << cls << "\n";
                     auto found = visitorsMap.find(cls->getId());
 
                     if (found != end(visitorsMap)) {
-                        std::cout << "STATIC VISITOR:     found handler...\n";
+                        TRACE << "STATIC VISITOR:     found handler...\n";
 
                         bool visitHandled = found->second();
                         // If visit was successfull, stop going through
                         // hierarchy and exit.
                         return !visitHandled;
                     }
-                    std::cout << "STATIC VISITOR:     handler not found.\n";
+                    TRACE << "STATIC VISITOR:     handler not found.\n";
 
                     return true;
                 }

@@ -184,24 +184,13 @@ As a conclusion whenever your aim are goals from above, you have to implement bo
    // .h
    #pragma once
 
-   #include 'Object.h'
-   #include 'MyObject.generated.h'
+   #include "Object.h"
+   #include "MyObject.generated.h"
    UCLASS()
    class MYPROJECT_API UMyObject : public UObject
    {
       GENERATED_BODY()
    };
-
-   // .cpp
-   // ...
-   void usage() {
-      UClass* ClassA = UDamageType::StaticClass();
-
-      TSubclassOf<UDamageType> ClassB;
-
-      // Performs a runtime check
-      ClassB = ClassA;
-   }
    ```
 
    (*details: [UE Documentation, Objects](https://docs.unrealengine.com/5.1/en-US/objects-in-unreal-engine/)*)
@@ -294,7 +283,7 @@ with_rtti(struct, Square, Shape)
 with_rtti_end()
 ```
 
-*NOTE: if you need multiple parents, then you can use `with_rtti_parents(struct_or_class, name, parents)`. There 
+*NOTE: if you need multiple parents, then you can use `with_rtti_parents(struct_or_class, name, parents)`. There
 is also `with_rtti_vparents_parents` and other versions of this macro.*
 
 
@@ -362,7 +351,7 @@ Let's take a look at internals. There are few key things:
       // This friendship provides access to crossPtrs for RTTI specs.
       template<class T> friend class RTTI;
 
-      std::unordered_map<const ClassInfo*, void*> crossPtrs;
+      std::map<const ClassInfo*, void*> crossPtrs;
    };
    ```
 * `RTTI` - We force each class (`ClassT`) to inherit from `RTTI<ClassT>`. This template defines default constructor `RTTI()`, which:
@@ -431,7 +420,12 @@ we expect constant time for all our cast operations with rare collisions.
 
 So let's take a look at benchmarks:
 
+#### `myrtti` vs `dynamic_cast`
 ![image](compare_casts.png)
+#### `myrtti` vs `MFC`
+![image](mfc.png)
+#### `myrtti` vs `Unreal Engine`
+![image](unreal.png)
 
 *(note that you can reproduce it by running `compare_casts_plot` target)*
 
@@ -458,6 +452,16 @@ Let's try to introduce `Class::parents` constexpr array which will hold *class_i
 *rtti*ed parents (non-virtual).
 
 So here we still have a chance to match it.
+
+#### 4. MFC and Unreal are better in positive casts, but lose at negative scenario
+Both MFC and Unreal Engine are optimized for use with positive type cases.
+
+#### 5. Earlier benchmark work inspired us to introduce `try_static_cast`
+The latter is very similar to UnrealEngine's `Cast`:
+1. It checks whether this pointer has target type as one of its parents.
+2. If check is positive it performs `static_cast`.
+It works faster than `cast` it assumes that you're not using virtual inharitance. Use it with caution.
+
 
 ### Visitor
 Our version of visitor might be illustrated by following example:
@@ -508,7 +512,7 @@ struct Visitor {
    ) {
       (
          [&] {
-            visitorsMap.emplace(Cls::class_id,
+            visitorsMap.emplace(Cls::class_id(),
                [=] (Object& b) {
                      Cls& bb = b.template cast<Cls>();
                      return visitors(bb);
