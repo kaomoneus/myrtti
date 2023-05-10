@@ -19,7 +19,7 @@
 #include "benchmarks_common.h"
 
 
-constexpr int numIterations = 1000000;
+constexpr int numIterations = 2500000;
 
 COMPARE_CASTS_BENCHMARK(FromBase, DeepTest19, this->basePtr)
 COMPARE_CASTS_BENCHMARK(ToBase, Root, this->finalPtr)

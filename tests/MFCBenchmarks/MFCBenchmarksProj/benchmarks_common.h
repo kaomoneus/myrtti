@@ -135,7 +135,7 @@ using  MFCFixture = InheritanceFixture<_mfc::Root, _mfc::DeepTest19>;
     __MYRTTI_BENCHMARK(name, MFCFixture, DYNAMIC_DOWNCAST, To, From);
 
 #define COMPARE_CASTS_BENCHMARK(namePrefix, To, From) \
-    LEGACY_CAST_BENCHMARK(namePrefix##_dynamic_cast, _mfc::To, From); \
+    LEGACY_CAST_BENCHMARK(namePrefix##_mfc, _mfc::To, From); \
     MYRTTI_CAST_BENCHMARK(namePrefix##_myrtti, _myrtti::To, From); \
 
 #endif // MYRTTI_BENCHMARKS_COMMON

@@ -25,6 +25,9 @@ set(RTTI_SHARE_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/share )
 
 if (NOT ${CMAKE_GENERATOR} MATCHES "Visual Studio")
     set(CMAKE_CXX_FLAGS "-Werror")
+else()
+    # Use standard conforming preprocessor when compiling with MSVC.
+    set(CMAKE_CXX_FLAGS "/Zc:preprocessor")
 endif()
 
 option(MYRTTI_ENABLE_TESTS "Enable tests" ON)

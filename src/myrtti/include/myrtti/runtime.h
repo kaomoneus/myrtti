@@ -38,7 +38,7 @@
 
 #include <type_traits>
 
-#ifdef __clang__
+#if defined(__clang__) || defined(__GNUG__)
 #define MYRTTI_INLINE inline __attribute__((always_inline))
 #elif defined(_MSC_VER)
 #define MYRTTI_INLINE __forceinline
