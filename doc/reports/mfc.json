@@ -1,0 +1,88 @@
+{
+  "context": {
+    "date": "05/10/23 11:21:44",
+    "host_name": "123123",
+    "executable": "MFCBenchmarksProj.exe",
+    "num_cpus": 8,
+    "mhz_per_cpu": 1498,
+    "cpu_scaling_enabled": false,
+    "caches": [
+      {
+        "type": "Data",
+        "level": 1,
+        "size": 49152000,
+        "num_sharing": 2
+      },
+      {
+        "type": "Instruction",
+        "level": 1,
+        "size": 32768000,
+        "num_sharing": 2
+      },
+      {
+        "type": "Unified",
+        "level": 2,
+        "size": 1310720000,
+        "num_sharing": 2
+      },
+      {
+        "type": "Unified",
+        "level": 3,
+        "size": 8388608000,
+        "num_sharing": 8
+      }
+    ],
+    "load_avg": [],
+    "library_build_type": "release"
+  },
+  "benchmarks": [
+    {
+      "name": "MFCFixture/FromBase_mfc",
+      "run_name": "MFCFixture/FromBase_mfc",
+      "run_type": "iteration",
+      "repetitions": 0,
+      "repetition_index": 0,
+      "threads": 1,
+      "iterations": 145,
+      "real_time": 4.6317186206579208e+06,
+      "cpu_time": 4.6336206896551726e+06,
+      "time_unit": "ns"
+    },
+    {
+      "name": "MyRttiFixture/FromBase_myrtti",
+      "run_name": "MyRttiFixture/FromBase_myrtti",
+      "run_type": "iteration",
+      "repetitions": 0,
+      "repetition_index": 0,
+      "threads": 1,
+      "iterations": 112,
+      "real_time": 5.5656973220590902e+06,
+      "cpu_time": 5.5803571428571427e+06,
+      "time_unit": "ns"
+    },
+    {
+      "name": "MFCFixture/ToBase_mfc",
+      "run_name": "MFCFixture/ToBase_mfc",
+      "run_type": "iteration",
+      "repetitions": 0,
+      "repetition_index": 0,
+      "threads": 1,
+      "iterations": 19,
+      "real_time": 3.8178552628347747e+07,
+      "cpu_time": 3.7006578947368421e+07,
+      "time_unit": "ns"
+    },
+    {
+      "name": "MyRttiFixture/ToBase_myrtti",
+      "run_name": "MyRttiFixture/ToBase_myrtti",
+      "run_type": "iteration",
+      "repetitions": 0,
+      "repetition_index": 0,
+      "threads": 1,
+      "iterations": 112,
+      "real_time": 5.4050589283828493e+06,
+      "cpu_time": 5.3013392857142854e+06,
+      "time_unit": "ns"
+    }
+  ]
+}
