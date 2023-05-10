@@ -14,8 +14,6 @@
 
 set(BENCHMARK_TARGET myrtti_benchamrk)
 
-find_package(benchmark REQUIRED)
-
 macro(benchmark_frtti benchmark_name)
     add_executable(${benchmark_name} ${benchmark_name}.cpp)
     target_link_libraries(${benchmark_name} benchmark::benchmark myrtti_frtti)

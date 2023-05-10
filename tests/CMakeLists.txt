@@ -16,8 +16,14 @@ if (MYRTTY_CLANG_ROOT)
     add_subdirectory(clang-plugin)
 endif()
 
-if (MYRTTI_ENABLE_TESTS_BENCHMARK)
+find_package(benchmark)
+
+
+if (benchmark_FOUND)
+    message("Found Google Benchmark. Benchmarks are enabled.")
     add_subdirectory(benchmark)
+else()
+    message("Google Benchmarks not found, benchmarks will be disabled.")
 endif()
 
 find_package(GTest)

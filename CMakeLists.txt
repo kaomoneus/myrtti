@@ -30,9 +30,6 @@ else()
     set(CMAKE_CXX_FLAGS "/Zc:preprocessor")
 endif()
 
-option(MYRTTI_ENABLE_TESTS "Enable tests" ON)
-option(MYRTTI_ENABLE_TESTS_BENCHMARK "Enable benchmark test (requires google/benchmark lib to be installed)" OFF)
-
 option(MYRTTI_ENABLE_CLANG_PLUGIN "Enable clang plugin (not implemented yet)" OFF)
 option(MYRTTI_CLANG_ROOT "Root to clang and llvm dirs (required for clang plugin only).")
 
@@ -43,6 +40,4 @@ if (MYRTTI_ENABLE_CLANG_PLUGIN)
     add_subdirectory (src/clang-plugin)
 endif()
 
-if (MYRTTI_ENABLE_TESTS)
-    add_subdirectory (tests)
-endif()
+add_subdirectory (tests)
