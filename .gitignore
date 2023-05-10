@@ -22,3 +22,5 @@ cmake-build-*/**
 **/.vs
 **/x64
 **/MFCBenchmarks/packages
+
+**/.venv
