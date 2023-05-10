@@ -2,6 +2,8 @@ build
 build/*
 build/**
 
+buildvs
+
 .idea
 .idea/*
 .idea/**
@@ -16,3 +18,7 @@ build/**
 cmake-build-*/**
 
 .DS_Store
+
+**/.vs
+**/x64
+**/MFCBenchmarks/packages
