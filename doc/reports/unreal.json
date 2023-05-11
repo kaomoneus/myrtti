@@ -72,8 +72,46 @@
       "cpu_time": 33.786,
       "time_unit": "ms"
     },
+
     {
-      "name": "StandaloneRun/FromBase_CastNegative_MyRTTI",
+      "name": "StandaloneRun/ToBase_Cast_Unreal",
+      "run_name": "StandaloneRun/ToBase_Cast_Unreal",
+      "run_type": "iteration",
+      "repetitions": 0,
+      "repetition_index": 0,
+      "threads": 1,
+      "iterations": 600,
+      "real_time": 43.209,
+      "cpu_time": 43.209,
+      "time_unit": "ms"
+    },
+    {
+      "name": "StandaloneRun/ToBase_Cast_MyRTTI",
+      "run_name": "StandaloneRun/ToBase_Cast_MyRTTI",
+      "run_type": "iteration",
+      "repetitions": 0,
+      "repetition_index": 0,
+      "threads": 1,
+      "iterations": 600,
+      "real_time": 27.208,
+      "cpu_time": 27.208,
+      "time_unit": "ms"
+    },
+    {
+      "name": "StandaloneRun/ToBase_Cast_MyRTTI_TryStatic",
+      "run_name": "StandaloneRun/ToBase_Cast_MyRTTI_TryStatic",
+      "run_type": "iteration",
+      "repetitions": 0,
+      "repetition_index": 0,
+      "threads": 1,
+      "iterations": 600,
+      "real_time": 7.973,
+      "cpu_time": 7.973,
+      "time_unit": "ms"
+    },
+
+    {
+      "name": "StandaloneRun/ToBase_CastNegative_MyRTTI",
       "run_name": "StandaloneRun/FromBase_CastNegative_MyRTTI",
       "run_type": "iteration",
       "repetitions": 0,

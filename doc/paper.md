@@ -142,6 +142,55 @@ As a conclusion whenever your aim are goals from above, you have to implement bo
    * Cons:
       * Still doesn't support hierarchy, but potentially it might be improved though.
       * You still have to keep track of extra `child::ID`.
+
+   Here's a quick snippet of how we could rework `RTTIExtends`:
+   ```c++
+   typedef const void* class_id_t;
+
+   struct ClassInfo {
+      const ClassInfo* parent;
+      class_id_t id() const { return this; }
+      bool isa(const ClassInfo* target) const {
+         if (target->id() == id()) return true;
+         if (!parent) return false;
+         return parent->isa(target);
+      }
+   };
+
+   struct Object {
+      static inline ClassInfo cls{nullptr};
+      ClassInfo* myCls = &cls;
+   };
+
+   template <typename ThisT, typename ParentT>
+   struct Extends : public ParentT {
+      static inline ClassInfo cls{&ParentT::cls};
+      static constexpr class_id_t class_id{&cls};
+      Extends() { Object::myCls = &cls; }
+   };
+
+   template<typename TargetT>
+   bool isa(Object* p) {
+      return p->myCls->isa(&TargetT::cls);
+   }
+
+   // But this snippet is for single inheritance.. so...
+   struct Root : public Extends<Root, Object> {};
+   struct A : public Extends<A, Root> {};
+   struct B : public Extends<B, Root> {};
+   ```
+
+   ...Or for multiple inharitance we could use something like this:
+   ```c++
+   struct Root :
+      public Extends<Root, Virtual<Parent1>, Virtual<Parent2>, Parent3> {
+      // ...
+   };
+   ```
+
+   But it might be a plan for our future work. So far we'll use
+   similar but different solution. Will show it a bit later.
+
 ### XNU, OSMetaClass
 
    (*details: [IOKit Funamentals -> Runtime Type Information (OSMetaClass)](https://developer.apple.com/library/archive/documentation/DeviceDrivers/Conceptual/IOKitFundamentals/BaseClasses/BaseClasses.html#//apple_ref/doc/uid/TP0000016-CJBFJECG)*)
